@@ -228,3 +228,5 @@ describe('TokenLaunchScreen', () => {
     expect(screen.getByText('99%')).toBeInTheDocument()
   })
 })
+
+

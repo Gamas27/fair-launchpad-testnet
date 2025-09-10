@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/providers/WagmiProvider";
+import { WorldIdProvider } from "@/providers/WorldIdProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {children}
+          <WorldIdProvider
+            config={{
+              appId: process.env.NEXT_PUBLIC_WORLD_ID_APP_ID || 'app_staging_1234567890abcdef',
+              action: 'verify-human',
+              signal: 'anti-bot-launchpad'
+            }}
+          >
+            {children}
+          </WorldIdProvider>
         </Providers>
       </body>
     </html>
