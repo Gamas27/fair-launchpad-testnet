@@ -201,7 +201,15 @@ jest.mock('@/components/ui/card', () => ({
 
 jest.mock('@/components/ui/progress', () => ({
   Progress: ({ children, className, value, ...props }) => (
-    <div className={className || ''} data-value={value} {...props}>
+    <div 
+      className={className || ''} 
+      data-value={value} 
+      role="progressbar"
+      aria-valuenow={value}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      {...props}
+    >
       {children}
     </div>
   ),
@@ -210,10 +218,67 @@ jest.mock('@/components/ui/progress', () => ({
   ),
 }))
 
-jest.mock('@/components/ui/button', () => ({
-  Button: ({ children, className, variant, size, ...props }) => (
-    <button className={className || ''} data-variant={variant} data-size={size} {...props}>
-      {children}
-    </button>
-  ),
-}))
+// Mock Button component with proper class handling
+jest.mock('@/components/ui/button', () => {
+  const React = require('react')
+  
+  // Simple class merging function
+  const mergeClasses = (...classes) => {
+    return classes.filter(Boolean).join(' ')
+  }
+  
+  // Mock buttonVariants function
+  const buttonVariants = (options) => {
+    const { variant = 'default', size = 'default', className } = options || {}
+    
+    const baseClasses = 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
+    
+    const variantClasses = {
+      default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+      destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+      outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+      ghost: 'hover:bg-accent hover:text-accent-foreground',
+      link: 'text-primary underline-offset-4 hover:underline',
+      neon: 'bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold hover:from-cyan-300 hover:to-blue-400 shadow-lg shadow-cyan-500/25',
+    }
+    
+    const sizeClasses = {
+      default: 'h-10 px-4 py-2',
+      sm: 'h-9 rounded-md px-3',
+      lg: 'h-11 rounded-md px-8',
+      icon: 'h-10 w-10',
+    }
+    
+    return mergeClasses(
+      baseClasses,
+      variantClasses[variant],
+      sizeClasses[size],
+      className
+    )
+  }
+  
+  return {
+    Button: ({ children, className, variant, size, asChild = false, ...props }) => {
+      const classes = buttonVariants({ variant, size, className })
+      
+      if (asChild) {
+        // For asChild, we need to clone the child element and add classes
+        const child = React.Children.only(children)
+        return React.cloneElement(child, {
+          className: mergeClasses(classes, child.props.className),
+          'data-variant': variant,
+          'data-size': size,
+          ...props,
+        })
+      }
+      
+      return (
+        <button className={classes} data-variant={variant} data-size={size} {...props}>
+          {children}
+        </button>
+      )
+    },
+    buttonVariants,
+  }
+})
