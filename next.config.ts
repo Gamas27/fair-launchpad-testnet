@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'export',
-  trailingSlash: true,
+  // output: 'export', // Commented out for Vercel deployment
+  // trailingSlash: true, // Commented out for Vercel deployment
   images: {
     unoptimized: true,
   },
