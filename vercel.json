@@ -1,12 +1,5 @@
 {
   "version": 2,
-  "name": "fair-launchpad-testnet",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "env": {
     "NODE_ENV": "production",
     "NEXT_PUBLIC_ENVIRONMENT": "testnet"
