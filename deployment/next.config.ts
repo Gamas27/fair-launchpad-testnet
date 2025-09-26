@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   output: 'export',
   trailingSlash: true,
   images: {
+    domains: ['via.placeholder.com'],
     unoptimized: true,
   },
   experimental: {
@@ -28,10 +29,6 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     // !! WARN !!
     ignoreBuildErrors: true,
-  },
-  images: {
-    domains: ['via.placeholder.com'],
-    unoptimized: true,
   },
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
