@@ -38,8 +38,6 @@ contract TokenFactory is Ownable, ReentrancyGuard {
     );
     
     event CreationFeeUpdated(uint256 oldFee, uint256 newFee);
-    event PlatformFeeRecipientUpdated(address oldRecipient, address newRecipient);
-    event CreatorVestingRecipientUpdated(address oldRecipient, address newRecipient);
     
     constructor(
         address _wldToken,
@@ -192,27 +190,6 @@ contract TokenFactory is Ownable, ReentrancyGuard {
         emit CreationFeeUpdated(oldFee, newFee);
     }
     
-    /**
-     * @dev Update platform fee recipient (only owner)
-     * @param newRecipient New platform fee recipient
-     */
-    function setPlatformFeeRecipient(address newRecipient) external onlyOwner {
-        require(newRecipient != address(0), "Invalid recipient address");
-        address oldRecipient = platformFeeRecipient;
-        // Note: This would require a new factory deployment to change immutable variables
-        emit PlatformFeeRecipientUpdated(oldRecipient, newRecipient);
-    }
-    
-    /**
-     * @dev Update creator vesting recipient (only owner)
-     * @param newRecipient New creator vesting recipient
-     */
-    function setCreatorVestingRecipient(address newRecipient) external onlyOwner {
-        require(newRecipient != address(0), "Invalid recipient address");
-        address oldRecipient = creatorVestingRecipient;
-        // Note: This would require a new factory deployment to change immutable variables
-        emit CreatorVestingRecipientUpdated(oldRecipient, newRecipient);
-    }
     
     /**
      * @dev Withdraw creation fees (only owner)
