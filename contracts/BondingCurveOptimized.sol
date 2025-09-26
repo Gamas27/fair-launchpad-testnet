@@ -206,13 +206,15 @@ contract BondingCurveOptimized is ERC20, Ownable, ReentrancyGuard, Pausable {
         require(!curveState.isGraduated, "AlreadyGraduated");
         curveState.isGraduated = true;
 
-        // Batch transfers for gas efficiency
+        // Transfer all WLD and tokens to graduation handler
         ERC20(wldToken).transfer(address(graduationHandler), curveState.totalRaisedWLD);
         ERC20(address(this)).transfer(address(graduationHandler), totalSupply());
 
-        // Call graduation handler
-        graduationHandler.handleGraduation(curveState.currentPrice, totalSupply());
-        curveState.uniswapPool = graduationHandler.uniswapPool();
+        // Call graduation handler and get the pool address directly
+        curveState.uniswapPool = graduationHandler.handleGraduation(
+            curveState.currentPrice,
+            totalSupply()
+        );
 
         emit Graduated(curveState.uniswapPool, curveState.totalRaisedWLD, curveState.currentPrice);
     }
