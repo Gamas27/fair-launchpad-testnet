@@ -227,3 +227,4 @@ export function GraduationProgress({ tokenAddress, className }: GraduationProgre
     </Card>
   );
 }
+

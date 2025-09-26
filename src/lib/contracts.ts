@@ -154,3 +154,4 @@ export class ContractService {
 export const contractService = new ContractService(
   new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL || 'https://rpc.testnet.worldchain.org')
 );
+

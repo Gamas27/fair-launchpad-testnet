@@ -235,3 +235,4 @@ export function useSmartContracts() {
     clearError: () => setError(null)
   };
 }
+

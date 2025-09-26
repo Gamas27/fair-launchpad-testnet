@@ -143,3 +143,4 @@ After deployment, you should have:
 ---
 
 **Next Step**: Once contracts are deployed, we'll connect the frontend to enable real blockchain functionality! 🚀
+

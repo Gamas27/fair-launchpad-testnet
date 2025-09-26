@@ -152,3 +152,4 @@ export function useGraduation(tokenAddress?: string) {
       (100 - graduationStatus.progressPercentage) * 10 : 0, // Rough estimate
   };
 }
+
