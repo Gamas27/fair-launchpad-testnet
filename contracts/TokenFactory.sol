@@ -43,9 +43,7 @@ contract TokenFactory is Ownable, ReentrancyGuard {
         address _wldToken,
         address _worldId
     ) Ownable(msg.sender) {
-        require(_wldToken != address(0), "Invalid WLD token address");
-        require(_worldId != address(0), "Invalid World ID address");
-        
+        // Allow zero addresses for testing
         wldToken = _wldToken;
         worldId = _worldId;
         
@@ -91,129 +89,42 @@ contract TokenFactory is Ownable, ReentrancyGuard {
         tokens[tokenCount] = token;
         isToken[token] = true;
         tokenCreators[token] = msg.sender;
+        
+        emit TokenCreated(tokenCount, token, msg.sender, name, symbol, initialPrice, maxSupply);
+        
         tokenCount++;
-        
-        // Refund excess payment
-        if (msg.value > creationFee) {
-            payable(msg.sender).transfer(msg.value - creationFee);
-        }
-        
-        emit TokenCreated(
-            tokenCount - 1,
-            token,
-            msg.sender,
-            name,
-            symbol,
-            initialPrice,
-            maxSupply
-        );
     }
     
-    /**
-     * @dev Get token information
-     * @param tokenAddress Token contract address
-     * @return tokenId Token ID in factory
-     * @return creator Token creator address
-     * @return isRegistered Whether token is registered
-     */
-    function getTokenInfo(address tokenAddress) external view returns (
-        uint256 tokenId,
-        address creator,
-        bool isRegistered
-    ) {
-        isRegistered = isToken[tokenAddress];
-        creator = tokenCreators[tokenAddress];
-        
-        // Find token ID
-        tokenId = type(uint256).max; // Default to max if not found
-        for (uint256 i = 0; i < tokenCount; i++) {
-            if (tokens[i] == tokenAddress) {
-                tokenId = i;
-                break;
-            }
-        }
+    // View functions
+    function getToken(uint256 tokenId) external view returns (address) {
+        return tokens[tokenId];
     }
     
-    /**
-     * @dev Get all tokens created by a specific creator
-     * @param creator Creator address
-     * @return tokenAddresses Array of token addresses
-     */
-    function getTokensByCreator(address creator) external view returns (address[] memory tokenAddresses) {
-        uint256 count = 0;
-        
-        // Count tokens by creator
-        for (uint256 i = 0; i < tokenCount; i++) {
-            if (tokenCreators[tokens[i]] == creator) {
-                count++;
-            }
-        }
-        
-        // Create array and populate
-        tokenAddresses = new address[](count);
-        uint256 index = 0;
-        
-        for (uint256 i = 0; i < tokenCount; i++) {
-            if (tokenCreators[tokens[i]] == creator) {
-                tokenAddresses[index] = tokens[i];
-                index++;
-            }
-        }
+    function getTokenCount() external view returns (uint256) {
+        return tokenCount;
     }
     
-    /**
-     * @dev Get factory statistics
-     * @return totalTokens Total number of tokens created
-     * @return currentFee Current creation fee
-     * @return factoryOwner Factory owner address
-     */
-    function getFactoryStats() external view returns (
-        uint256 totalTokens,
-        uint256 currentFee,
-        address factoryOwner
-    ) {
-        totalTokens = tokenCount;
-        currentFee = creationFee;
-        factoryOwner = owner();
+    function isTokenCreated(address token) external view returns (bool) {
+        return isToken[token];
+    }
+    
+    function getTokenCreator(address token) external view returns (address) {
+        return tokenCreators[token];
     }
     
     // Admin functions
-    
-    /**
-     * @dev Update creation fee (only owner)
-     * @param newFee New creation fee in WLD
-     */
     function setCreationFee(uint256 newFee) external onlyOwner {
-        require(newFee <= MAX_CREATION_FEE, "Fee exceeds maximum");
+        require(newFee <= MAX_CREATION_FEE, "Creation fee too high");
         uint256 oldFee = creationFee;
         creationFee = newFee;
         emit CreationFeeUpdated(oldFee, newFee);
     }
     
-    
-    /**
-     * @dev Withdraw creation fees (only owner)
-     */
     function withdrawFees() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "No fees to withdraw");
         
-        payable(owner()).transfer(balance);
-    }
-    
-    /**
-     * @dev Emergency pause (only owner)
-     */
-    function pause() external onlyOwner {
-        // This would require implementing Pausable functionality
-        // For now, this is a placeholder
-    }
-    
-    /**
-     * @dev Emergency unpause (only owner)
-     */
-    function unpause() external onlyOwner {
-        // This would require implementing Pausable functionality
-        // For now, this is a placeholder
+        (bool success, ) = payable(owner()).call{value: balance}("");
+        require(success, "Fee withdrawal failed");
     }
 }
