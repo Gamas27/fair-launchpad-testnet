@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Shield, TrendingUp, Users, BarChart3, Lock, CheckCircle, Zap } from "lucide-react"
+import { Shield, Users, Lock, CheckCircle, Zap } from "lucide-react"
 import { Token, User } from "@/types"
 import { useState } from "react"
 import { useSafeWorldId } from "@/providers/SafeWorldIdProvider"
@@ -15,7 +15,7 @@ export default function DeeprInspiredLaunch({ token, user }: DeeprInspiredLaunch
   const [buyAmount, setBuyAmount] = useState("")
   const [sellAmount, setSellAmount] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const { isVerified, verificationLevel } = useSafeWorldId()
+  const { isVerified } = useSafeWorldId()
   
   const remainingAllocation = user.allocationCap - user.usedAllocation
 
@@ -145,7 +145,7 @@ export default function DeeprInspiredLaunch({ token, user }: DeeprInspiredLaunch
             </div>
             <div className="flex items-center justify-between p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
               <div className="flex items-center gap-3">
-                <BarChart3 className="h-5 w-5 text-purple-400" />
+                <Users className="h-5 w-5 text-purple-400" />
                 <span className="font-semibold">Total Supply</span>
               </div>
               <div className="text-right">
@@ -190,7 +190,7 @@ export default function DeeprInspiredLaunch({ token, user }: DeeprInspiredLaunch
       <Card className="bg-card/50 backdrop-blur-sm border-green-500/20">
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">
-            <TrendingUp className="h-6 w-6 text-green-400" />
+            <Users className="h-6 w-6 text-green-400" />
             Fair Trading Interface
           </CardTitle>
           <CardDescription>

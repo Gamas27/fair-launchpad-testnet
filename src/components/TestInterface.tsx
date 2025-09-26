@@ -50,9 +50,9 @@ export function TestInterface() {
       console.log('Authentication successful, starting test mode...')
       setSelectedWallet(wallet)
       setIsTesting(true)
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Unknown error occurred'
-      console.error('Error setting up test user:', error)
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error occurred'
+      console.error('Error setting up test user:', err)
       setError(errorMsg)
       setIsLoading(false)
     }
@@ -65,7 +65,7 @@ export function TestInterface() {
     setError(null)
     // Clear mock wallet and authentication
     if (typeof window !== 'undefined') {
-      delete (window as any).ethereum
+      delete (window as Record<string, unknown>).ethereum
     }
     clearTestAuth()
   }

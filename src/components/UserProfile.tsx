@@ -8,18 +8,12 @@ import {
   Wallet, 
   Trophy, 
   Star, 
-  TrendingUp, 
-  TrendingDown,
   Shield,
   Zap,
-  Award,
   Activity,
   DollarSign,
   BarChart3,
-  Clock,
-  ExternalLink,
-  Copy,
-  Settings
+  Copy
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useSafeWorldId } from "@/providers/SafeWorldIdProvider"
@@ -81,7 +75,7 @@ export default function UserProfile() {
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'holdings' | 'launched' | 'achievements'>('overview')
-  const { isVerified, verificationLevel } = useSafeWorldId()
+  const { isVerified } = useSafeWorldId()
 
   useEffect(() => {
     fetchUserData()
@@ -324,7 +318,7 @@ export default function UserProfile() {
                   ? 'bg-cyan-600 text-white'
                   : 'text-gray-400 hover:text-white'
               }`}
-              onClick={() => setActiveTab(id as any)}
+              onClick={() => setActiveTab(id as 'overview' | 'holdings' | 'achievements' | 'settings')}
             >
               <Icon className="h-4 w-4" />
               {label}

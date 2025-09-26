@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
         },
       },
     },
+    outputFileTracingRoot: undefined,
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
@@ -28,9 +29,6 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     // !! WARN !!
     ignoreBuildErrors: true,
-  },
-  experimental: {
-    outputFileTracingRoot: undefined,
   },
   images: {
     domains: ['via.placeholder.com'],

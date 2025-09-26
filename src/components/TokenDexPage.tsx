@@ -5,22 +5,18 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { 
   TrendingUp, 
-  TrendingDown, 
   BarChart3, 
   Activity,
   Users,
   DollarSign,
-  Clock,
   Shield,
   Star,
   Zap,
-  ArrowUpRight,
-  ArrowDownRight,
   ExternalLink,
   Copy,
   Share2
 } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useSafeWorldId } from "@/providers/SafeWorldIdProvider"
 import PriceChart from "@/components/PriceChart"
 
@@ -70,7 +66,7 @@ export default function TokenDexPage({ tokenAddress }: TokenDexPageProps) {
   const [token, setToken] = useState<Token | null>(null)
   const [trades, setTrades] = useState<Trade[]>([])
   const [priceHistory, setPriceHistory] = useState<{ time: string; price: number }[]>([])
-  const [volumeHistory, setVolumeHistory] = useState<{ time: string; volume: number }[]>([])
+  const [, setVolumeHistory] = useState<{ time: string; volume: number }[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'trading' | 'analytics'>('overview')
   const { isVerified, verificationLevel } = useSafeWorldId()
@@ -80,9 +76,9 @@ export default function TokenDexPage({ tokenAddress }: TokenDexPageProps) {
       fetchTokenData()
       generateMockData()
     }
-  }, [tokenAddress])
+  }, [tokenAddress, fetchTokenData])
 
-  const fetchTokenData = async () => {
+  const fetchTokenData = useCallback(async () => {
     try {
       const response = await fetch(`/api/tokens/${tokenAddress}`)
       if (response.ok) {
@@ -94,7 +90,7 @@ export default function TokenDexPage({ tokenAddress }: TokenDexPageProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [tokenAddress])
 
   const generateMockData = () => {
     // Generate mock price history (last 24 hours)
@@ -263,7 +259,7 @@ export default function TokenDexPage({ tokenAddress }: TokenDexPageProps) {
                   ? 'bg-cyan-600 text-white'
                   : 'text-gray-400 hover:text-white'
               }`}
-              onClick={() => setActiveTab(id as any)}
+              onClick={() => setActiveTab(id as 'overview' | 'trading' | 'analytics')}
             >
               <Icon className="h-4 w-4" />
               {label}

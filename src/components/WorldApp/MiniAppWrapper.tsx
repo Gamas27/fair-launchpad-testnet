@@ -22,8 +22,8 @@ export function MiniAppWrapper({ children }: MiniAppWrapperProps) {
           window.location.hostname.includes('world.app') ||
           window.location.hostname.includes('world.org') ||
           // Check for World App specific globals
-          (window as any).worldApp ||
-          (window as any).worldId ||
+          (window as Record<string, unknown>).worldApp ||
+          (window as Record<string, unknown>).worldId ||
           // Check for World App user agent
           navigator.userAgent.includes('WorldApp')
         )

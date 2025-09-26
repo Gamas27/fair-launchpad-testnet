@@ -5,18 +5,16 @@ import { Badge } from "@/components/ui/badge"
 import { 
   TrendingUp, 
   TrendingDown, 
-  DollarSign, 
   BarChart3, 
   ArrowUpRight, 
   ArrowDownRight,
   Zap,
   Shield,
   Users,
-  Clock,
   Star,
   Activity
 } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useSafeWorldId } from "@/providers/SafeWorldIdProvider"
 
 interface Token {
@@ -51,9 +49,9 @@ export default function DeeprInspiredTrading() {
 
   useEffect(() => {
     fetchTokens()
-  }, [])
+  }, [fetchTokens])
 
-  const fetchTokens = async () => {
+  const fetchTokens = useCallback(async () => {
     try {
       const response = await fetch('/api/tokens')
       if (response.ok) {
@@ -66,7 +64,7 @@ export default function DeeprInspiredTrading() {
     } catch (error) {
       console.error('Failed to fetch tokens:', error)
     }
-  }
+  }, [selectedToken])
 
   const handleTrade = async () => {
     if (!isVerified) {

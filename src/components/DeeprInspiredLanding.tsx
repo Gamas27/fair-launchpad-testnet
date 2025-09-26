@@ -60,7 +60,7 @@ export default function DeeprInspiredLanding({ onNavigateToLaunch }: DeeprInspir
               </div>
               <CardTitle className="text-cyan-400 text-xl">World ID Verification</CardTitle>
               <CardDescription className="text-base">
-                Prove you're human with biometric verification to prevent bot manipulation
+                Prove you&apos;re human with biometric verification to prevent bot manipulation
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -209,7 +209,7 @@ export default function DeeprInspiredLanding({ onNavigateToLaunch }: DeeprInspir
                   <span className="text-cyan-400 font-bold">1</span>
                 </div>
                 <h3 className="font-semibold mb-2">Verify Identity</h3>
-                <p className="text-sm text-gray-400">Connect World ID to prove you're human</p>
+                <p className="text-sm text-gray-400">Connect World ID to prove you&apos;re human</p>
               </div>
               <div className="text-center">
                 <div className="mx-auto mb-3 w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">

@@ -4,7 +4,7 @@ import { Shield, Users, Zap } from "lucide-react"
 import { useSafeWorldId } from "@/providers/SafeWorldIdProvider"
 
 export default function LandingPage() {
-  const { isVerified, connect } = useSafeWorldId()
+  const { isVerified } = useSafeWorldId()
 
   const handleLaunchToken = async () => {
     if (!isVerified) {
@@ -47,7 +47,7 @@ export default function LandingPage() {
               </div>
               <CardTitle className="text-cyan-400 text-lg">World ID Verification</CardTitle>
               <CardDescription className="text-sm">
-                Prove you're human with biometric verification
+                Prove you&apos;re human with biometric verification
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-0">

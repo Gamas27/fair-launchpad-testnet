@@ -17,7 +17,7 @@ const analyzeTradeSchema = z.object({
   totalValue: z.number().positive(),
 })
 
-export const POST = withAuth(async (user, request: NextRequest, context?: { params: Promise<any> }) => {
+export const POST = withAuth(async (user, request: NextRequest, context?: { params: Promise<Record<string, unknown>> }) => {
   logApiRequest(request, user.walletAddress)
   
   const body = await request.json()

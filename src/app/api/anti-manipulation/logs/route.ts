@@ -18,7 +18,7 @@ const logsQuerySchema = z.object({
   offset: z.string().optional(),
 })
 
-export const GET = withAuth(async (user, request: NextRequest, context?: { params: Promise<any> }) => {
+export const GET = withAuth(async (user, request: NextRequest, context?: { params: Promise<Record<string, unknown>> }) => {
   logApiRequest(request, user.walletAddress)
   
   const { searchParams } = new URL(request.url)
@@ -37,7 +37,7 @@ export const GET = withAuth(async (user, request: NextRequest, context?: { param
   const db = DatabaseService.getInstance()
   
   try {
-    const where: any = {
+    const where: Record<string, unknown> = {
       userAddress: user.walletAddress,
     }
     
