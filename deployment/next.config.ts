@@ -16,7 +16,6 @@ const nextConfig: NextConfig = {
         },
       },
     },
-    outputFileTracingRoot: undefined,
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
