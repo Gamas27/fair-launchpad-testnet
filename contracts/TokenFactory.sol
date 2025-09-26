@@ -5,8 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./BondingCurveMinimal.sol";
 import "./interfaces/IWorldID.sol";
-import "./interfaces/IUniswapV3Factory.sol";
-import "./interfaces/INonfungiblePositionManager.sol";
 
 /**
  * @title TokenFactory
@@ -17,10 +15,6 @@ contract TokenFactory is Ownable, ReentrancyGuard {
     // Factory configuration
     address public immutable wldToken;
     address public immutable worldId;
-    address public immutable uniswapFactory;
-    address public immutable positionManager;
-    address public immutable platformFeeRecipient;
-    address public immutable creatorVestingRecipient;
     
     // Factory state
     uint256 public tokenCount;
@@ -49,25 +43,13 @@ contract TokenFactory is Ownable, ReentrancyGuard {
     
     constructor(
         address _wldToken,
-        address _worldId,
-        address _uniswapFactory,
-        address _positionManager,
-        address _platformFeeRecipient,
-        address _creatorVestingRecipient
+        address _worldId
     ) Ownable(msg.sender) {
         require(_wldToken != address(0), "Invalid WLD token address");
         require(_worldId != address(0), "Invalid World ID address");
-        require(_uniswapFactory != address(0), "Invalid Uniswap Factory address");
-        require(_positionManager != address(0), "Invalid Position Manager address");
-        require(_platformFeeRecipient != address(0), "Invalid platform fee recipient");
-        require(_creatorVestingRecipient != address(0), "Invalid creator vesting recipient");
         
         wldToken = _wldToken;
         worldId = _worldId;
-        uniswapFactory = _uniswapFactory;
-        positionManager = _positionManager;
-        platformFeeRecipient = _platformFeeRecipient;
-        creatorVestingRecipient = _creatorVestingRecipient;
         
         creationFee = 0.1 ether; // Default creation fee: 0.1 WLD
     }

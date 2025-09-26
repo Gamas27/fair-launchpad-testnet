@@ -9,7 +9,7 @@ import "./interfaces/IUniswapV3Factory.sol";
 import "./interfaces/INonfungiblePositionManager.sol";
 import "./GraduationHandlerOptimized.sol";
 
-contract BondingCurveUltraMinimal is ERC20, Ownable, ReentrancyGuard {
+contract BondingCurveWithGraduation is ERC20, Ownable, ReentrancyGuard {
     uint256 public constant GRADUATION_THRESHOLD = 1000 ether;
     
     IWorldID public immutable worldId;

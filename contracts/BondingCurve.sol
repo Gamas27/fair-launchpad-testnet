@@ -5,18 +5,12 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./interfaces/IWorldID.sol";
-import "./interfaces/IUniswapV3Factory.sol";
-import "./interfaces/INonfungiblePositionManager.sol";
 
 contract BondingCurve is ERC20, Ownable, ReentrancyGuard {
     uint256 public constant GRADUATION_THRESHOLD = 1000 ether;
     
     IWorldID public immutable worldId;
-    IUniswapV3Factory public immutable uniswapFactory;
-    INonfungiblePositionManager public immutable positionManager;
     address public immutable wldToken;
-    address public immutable platformFeeRecipient;
-    address public immutable creatorVestingRecipient;
     
     uint256 public currentPrice;
     uint256 public totalRaisedWLD;
@@ -40,26 +34,16 @@ contract BondingCurve is ERC20, Ownable, ReentrancyGuard {
         string memory symbol,
         address _wldToken,
         address _worldId,
-        address _uniswapFactory,
-        address _positionManager,
-        address _platformFeeRecipient,
-        address _creatorVestingRecipient,
         uint256 _initialPrice,
         uint256 _maxSupply,
         uint256 _worldIdRoot,
-        uint256 _worldIdGroupId,
         uint256 _worldIdExternalNullifier
     ) ERC20(name, symbol) Ownable(msg.sender) {
         wldToken = _wldToken;
         worldId = IWorldID(_worldId);
-        uniswapFactory = IUniswapV3Factory(_uniswapFactory);
-        positionManager = INonfungiblePositionManager(_positionManager);
-        platformFeeRecipient = _platformFeeRecipient;
-        creatorVestingRecipient = _creatorVestingRecipient;
         currentPrice = _initialPrice;
         maxSupply = _maxSupply;
         worldIdRoot = _worldIdRoot;
-        worldIdGroupId = _worldIdGroupId;
         worldIdExternalNullifier = _worldIdExternalNullifier;
     }
 
