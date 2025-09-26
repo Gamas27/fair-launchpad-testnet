@@ -84,7 +84,7 @@ contract GraduationHandlerOptimized is Ownable, ReentrancyGuard {
     /**
      * @dev Gas-optimized graduation handler
      */
-    function handleGraduation(uint256 finalPrice, uint256 totalTokenSupply) external onlyOwner nonReentrant {
+    function handleGraduation(uint256 finalPrice, uint256 totalTokenSupply) external onlyOwner nonReentrant returns (address) {
         require(!graduationState.isGraduated, "Already graduated");
         require(graduationState.uniswapPool == address(0), "Uniswap pool already created");
 
@@ -115,6 +115,8 @@ contract GraduationHandlerOptimized is Ownable, ReentrancyGuard {
         });
 
         emit GraduationCompleted(address(token), graduationState.uniswapPool, liquidityWLD, tokenLiquidityAmount);
+        
+        return graduationState.uniswapPool;
     }
 
     /**
