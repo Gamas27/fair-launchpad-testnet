@@ -9,7 +9,7 @@ import "./interfaces/IWorldID.sol";
 import "./interfaces/IUniswapV3Factory.sol";
 import "./interfaces/IUniswapV3Pool.sol";
 import "./interfaces/INonfungiblePositionManager.sol";
-import "./GraduationHandler.sol";
+import "./GraduationHandlerOptimized.sol";
 
 /**
  * @title BondingCurveOptimized
@@ -34,7 +34,7 @@ contract BondingCurveOptimized is ERC20, Ownable, ReentrancyGuard, Pausable {
     IWorldID public immutable worldId;
     IUniswapV3Factory public immutable uniswapFactory;
     INonfungiblePositionManager public immutable positionManager;
-    GraduationHandler public immutable graduationHandler;
+    GraduationHandlerOptimized public immutable graduationHandler;
     address public immutable wldToken;
     address public immutable platformFeeRecipient;
     address public immutable creatorVestingRecipient;
@@ -114,7 +114,7 @@ contract BondingCurveOptimized is ERC20, Ownable, ReentrancyGuard, Pausable {
         });
         
         // Create graduation handler
-        graduationHandler = new GraduationHandler(
+        graduationHandler = new GraduationHandlerOptimized(
             address(this),
             wldToken,
             _uniswapFactory,
