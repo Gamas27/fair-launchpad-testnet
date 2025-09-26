@@ -63,7 +63,7 @@ export const GET = withAuth(async (user, request: NextRequest, context?: { param
     }
     
     // Apply pagination
-    const paginatedAchievements = filteredAchievements.slice(offset, offset + limit)
+    const paginatedAchievements = filteredAchievements.slice(Number(offset), Number(offset) + Number(limit))
     
     // Format achievements with user progress
     const formattedAchievements = paginatedAchievements.map(achievement => {
