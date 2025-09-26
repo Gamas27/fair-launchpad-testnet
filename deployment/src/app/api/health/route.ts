@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { DatabaseService } from '@/lib/database'
+import { prisma } from '@/lib/database'
 
 export async function GET(request: NextRequest) {
   try {
-    const db = DatabaseService.getInstance()
-    
     // Check database connectivity
-    await db.prisma.$queryRaw`SELECT 1`
+    await prisma.$queryRaw`SELECT 1`
     
     // Get basic stats
     const [userCount, tokenCount, tradeCount] = await Promise.all([
-      db.prisma.user.count(),
-      db.prisma.token.count(),
-      db.prisma.trade.count(),
+      prisma.user.count(),
+      prisma.token.count(),
+      prisma.trade.count(),
     ])
     
     return NextResponse.json({
