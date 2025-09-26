@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./BondingCurveOptimized.sol";
+import "./BondingCurveMinimal.sol";
 import "./interfaces/IWorldID.sol";
 import "./interfaces/IUniswapV3Factory.sol";
 import "./interfaces/INonfungiblePositionManager.sol";
@@ -79,7 +79,6 @@ contract TokenFactory is Ownable, ReentrancyGuard {
      * @param initialPrice Initial price in WLD
      * @param maxSupply Maximum token supply
      * @param worldIdRoot World ID root for verification
-     * @param worldIdGroupId World ID group ID
      * @param worldIdExternalNullifier World ID external nullifier
      */
     function createToken(
@@ -88,7 +87,6 @@ contract TokenFactory is Ownable, ReentrancyGuard {
         uint256 initialPrice,
         uint256 maxSupply,
         uint256 worldIdRoot,
-        uint256 worldIdGroupId,
         uint256 worldIdExternalNullifier
     ) external payable nonReentrant returns (address token) {
         require(bytes(name).length > 0, "Token name required");
@@ -98,19 +96,14 @@ contract TokenFactory is Ownable, ReentrancyGuard {
         require(msg.value >= creationFee, "Insufficient creation fee");
         
         // Create new bonding curve token
-        token = address(new BondingCurveOptimized(
+        token = address(new BondingCurveMinimal(
             name,
             symbol,
             wldToken,
             worldId,
-            uniswapFactory,
-            positionManager,
-            platformFeeRecipient,
-            creatorVestingRecipient,
             initialPrice,
             maxSupply,
             worldIdRoot,
-            worldIdGroupId,
             worldIdExternalNullifier
         ));
         
