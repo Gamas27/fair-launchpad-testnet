@@ -85,8 +85,8 @@ export const GET = withAuth(async (user, request: NextRequest, context?: { param
     const responseData = createPaginationResponse(
       formattedAchievements,
       filteredAchievements.length,
-      limit,
-      offset
+      Number(limit),
+      Number(offset)
     )
     
     // Add summary statistics
