@@ -247,6 +247,10 @@ contract GraduationHandlerOptimized is Ownable, ReentrancyGuard {
         return graduationState.isGraduated;
     }
 
+    function uniswapPool() external view returns (address) {
+        return graduationState.uniswapPool;
+    }
+
     function getGraduationState() external view returns (
         address pool,
         bool graduated,
