@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { DatabaseService } from '@/lib/database'
+import { prisma } from '@/lib/database'
 import { 
   withAuth, 
   successResponse, 
@@ -20,11 +20,9 @@ export const POST = withAuth(async (user, request: NextRequest, context?: { para
   const body = await request.json()
   const data = validateRequestBody(completeQuestSchema, body)
   
-  const db = DatabaseService.getInstance()
-  
   try {
     // Get the quest
-    const quest = await db.prisma.reputationQuest.findUnique({
+    const quest = await prisma.reputationQuest.findUnique({
       where: { id: data.questId },
     })
     
@@ -37,7 +35,7 @@ export const POST = withAuth(async (user, request: NextRequest, context?: { para
     }
     
     // Get user's current progress
-    const userQuest = await db.prisma.userReputationQuest.findUnique({
+    const userQuest = await prisma.userReputationQuest.findUnique({
       where: {
         userAddress_questId: {
           userAddress: user.walletAddress,
