@@ -79,18 +79,30 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
         uint256 nullifierHash,
         uint256[8] calldata proof
     ) external nonReentrant {
+        _validateBuy(wldAmount, nullifierHash);
+        _transferWLD(wldAmount);
+        _verifyAndMarkWorldId(nullifierHash, proof);
+        _processTokenMint(wldAmount);
+    }
+
+    function _validateBuy(uint256 wldAmount, uint256 nullifierHash) internal view {
         require(!isGraduated, "Already graduated");
         require(wldAmount > 0, "Amount must be greater than 0");
         require(!usedNullifiers[nullifierHash], "WorldID: nullifier already used");
         require(!hasPurchased[msg.sender], "WorldID: address already purchased");
-        
-        require(ERC20(wldToken).transferFrom(msg.sender, address(this), wldAmount), "WLD transfer failed");
+    }
 
+    function _transferWLD(uint256 wldAmount) internal {
+        require(ERC20(wldToken).transferFrom(msg.sender, address(this), wldAmount), "WLD transfer failed");
+    }
+
+    function _verifyAndMarkWorldId(uint256 nullifierHash, uint256[8] calldata proof) internal {
         _verifyWorldIdProof(nullifierHash, proof);
-        
         usedNullifiers[nullifierHash] = true;
         hasPurchased[msg.sender] = true;
-        
+    }
+
+    function _processTokenMint(uint256 wldAmount) internal {
         uint256 tokensToMint = wldAmount / currentPrice;
         require(totalSupply() + tokensToMint <= maxSupply, "Max supply exceeded");
 
@@ -123,11 +135,17 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
         require(!isGraduated, "Already graduated");
         isGraduated = true;
 
+        _transferToGraduationHandler();
+        _executeGraduation();
+    }
+
+    function _transferToGraduationHandler() internal {
         ERC20(wldToken).transfer(address(graduationHandler), totalRaisedWLD);
         ERC20(address(this)).transfer(address(graduationHandler), totalSupply());
+    }
 
+    function _executeGraduation() internal {
         uniswapPool = graduationHandler.handleGraduation(currentPrice, totalSupply());
-
         emit Graduated(uniswapPool, totalRaisedWLD, currentPrice);
     }
 
