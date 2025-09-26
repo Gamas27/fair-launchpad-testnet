@@ -49,4 +49,9 @@ interface INonfungiblePositionManager {
         address to,
         uint256 tokenId
     ) external;
+
+    /// @notice Burns a token ID, which deletes it from the NFT contract
+    /// @dev The approval is cleared when the token is burned
+    /// @param tokenId The ID of the token to burn
+    function burn(uint256 tokenId) external;
 }
