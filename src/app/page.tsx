@@ -1,7 +1,8 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Navigation } from '@/components/Navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
   Shield, 
@@ -11,48 +12,66 @@ import {
   ArrowRight,
   ExternalLink,
   Zap,
-  CheckCircle
+  CheckCircle,
+  BarChart3
 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-gray-900">
-            Fair Launchpad
-          </h1>
-          <p className="text-xl text-gray-600">
-            Anti-bot meme coin launchpad with World ID verification
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <Navigation />
+      
+      <main className="container mx-auto px-4 py-8">
+        <div className="space-y-8">
+          {/* Mobile-optimized header */}
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                FairLaunch
+              </h1>
+              <p className="text-sm text-gray-300">
+                Anti-bot meme coin launchpad
+              </p>
+            </div>
+          </div>
 
-        {/* Module Navigation */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Core Journey Module */}
-          <Card className="hover:shadow-lg transition-shadow">
+          {/* Hero Section */}
+          <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Core Journey
+              <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                🚀 FairLaunch - Anti-Bot Meme Coin Launchpad
               </CardTitle>
-              <CardDescription>
-                World ID verification and wallet creation
+              <CardDescription className="text-center text-lg text-gray-300">
+                The first meme coin launchpad protected by World ID's Proof of Personhood
               </CardDescription>
             </CardHeader>
+          </Card>
+
+          {/* Module Navigation */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Core Journey Module */}
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-purple-300">
+                  <Shield className="h-5 w-5" />
+                  Core Journey
+                </CardTitle>
+                <CardDescription className="text-gray-300">
+                  World ID verification and wallet creation
+                </CardDescription>
+              </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-blue-500" />
                   <span>World ID Verification</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-blue-500" />
                   <span>Privy Wallet Creation</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-blue-500" />
                   <span>Journey Completion</span>
                 </div>
@@ -75,28 +94,28 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Token Creation Module */}
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Coins className="h-5 w-5" />
-                Token Creation
-              </CardTitle>
-              <CardDescription>
-                Create and launch tokens
-              </CardDescription>
-            </CardHeader>
+            {/* Token Creation Module */}
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-purple-300">
+                  <Coins className="h-5 w-5" />
+                  Token Creation
+                </CardTitle>
+                <CardDescription className="text-gray-300">
+                  Create and launch tokens
+                </CardDescription>
+              </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-purple-500" />
                   <span>Token Creation</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-purple-500" />
                   <span>Anti-Bot Protection</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-purple-500" />
                   <span>Bonding Curve</span>
                 </div>
@@ -119,28 +138,28 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Trading Module */}
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Launch Token
-              </CardTitle>
-              <CardDescription>
-                Launch tokens with anti-bot protection
-              </CardDescription>
-            </CardHeader>
+            {/* Launch Token Module */}
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-purple-300">
+                  <Rocket className="h-5 w-5" />
+                  Launch Token
+                </CardTitle>
+                <CardDescription className="text-gray-300">
+                  Launch tokens with anti-bot protection
+                </CardDescription>
+              </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-green-500" />
                   <span>Token Launch</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-green-500" />
                   <span>Anti-Bot Protection</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-green-500" />
                   <span>Bonding Curve</span>
                 </div>
@@ -163,28 +182,28 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Trading Interface Module */}
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Trading Interface
-              </CardTitle>
-              <CardDescription>
-                Trade tokens with advanced interface
-              </CardDescription>
-            </CardHeader>
+            {/* Trading Interface Module */}
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-purple-300">
+                  <BarChart3 className="h-5 w-5" />
+                  Trading Interface
+                </CardTitle>
+                <CardDescription className="text-gray-300">
+                  Trade tokens with advanced interface
+                </CardDescription>
+              </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-orange-500" />
                   <span>Token Trading</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-orange-500" />
                   <span>Price Charts</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-3 h-3 rounded-full bg-orange-500" />
                   <span>Trade History</span>
                 </div>
@@ -208,100 +227,101 @@ export default function Home() {
           </Card>
         </div>
 
-        {/* Status Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Core Journey</CardTitle>
-              <CardDescription>v1.0.0</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs space-y-1 font-mono">
-                <div>Status: ✅ Ready</div>
-                <div>World App: ✅ Optimized</div>
-                <div>Features: World ID + Wallet</div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Status Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
+              <CardHeader>
+                <CardTitle className="text-sm text-purple-300">Core Journey</CardTitle>
+                <CardDescription className="text-gray-300">v1.0.0</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs space-y-1 font-mono text-gray-300">
+                  <div>Status: ✅ Ready</div>
+                  <div>World App: ✅ Optimized</div>
+                  <div>Features: World ID + Wallet</div>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Token Creation</CardTitle>
-              <CardDescription>v1.0.0</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs space-y-1 font-mono">
-                <div>Status: ✅ Ready</div>
-                <div>World App: ✅ Optimized</div>
-                <div>Features: Creation + Launch</div>
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
+              <CardHeader>
+                <CardTitle className="text-sm text-purple-300">Token Creation</CardTitle>
+                <CardDescription className="text-gray-300">v1.0.0</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs space-y-1 font-mono text-gray-300">
+                  <div>Status: ✅ Ready</div>
+                  <div>World App: ✅ Optimized</div>
+                  <div>Features: Creation + Launch</div>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Launch Token</CardTitle>
-              <CardDescription>v1.0.0</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs space-y-1 font-mono">
-                <div>Status: ✅ Ready</div>
-                <div>World App: ✅ Optimized</div>
-                <div>Features: Launch + Trading</div>
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
+              <CardHeader>
+                <CardTitle className="text-sm text-purple-300">Launch Token</CardTitle>
+                <CardDescription className="text-gray-300">v1.0.0</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs space-y-1 font-mono text-gray-300">
+                  <div>Status: ✅ Ready</div>
+                  <div>World App: ✅ Optimized</div>
+                  <div>Features: Launch + Trading</div>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Trading Interface</CardTitle>
-              <CardDescription>v1.0.0</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs space-y-1 font-mono">
-                <div>Status: ✅ Ready</div>
-                <div>World App: ✅ Optimized</div>
-                <div>Features: Trading + Charts</div>
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
+              <CardHeader>
+                <CardTitle className="text-sm text-purple-300">Trading Interface</CardTitle>
+                <CardDescription className="text-gray-300">v1.0.0</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs space-y-1 font-mono text-gray-300">
+                  <div>Status: ✅ Ready</div>
+                  <div>World App: ✅ Optimized</div>
+                  <div>Features: Trading + Charts</div>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Deployment</CardTitle>
-              <CardDescription>Production</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs space-y-1 font-mono">
-                <div>Domain: ✅ Live</div>
-                <div>HTTPS: ✅ Secure</div>
-                <div>CDN: ✅ Active</div>
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
+              <CardHeader>
+                <CardTitle className="text-sm text-purple-300">Deployment</CardTitle>
+                <CardDescription className="text-gray-300">Production</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs space-y-1 font-mono text-gray-300">
+                  <div>Domain: ✅ Live</div>
+                  <div>HTTPS: ✅ Secure</div>
+                  <div>CDN: ✅ Active</div>
+                </div>
+              </CardContent>
+            </Card>
         </div>
 
-        {/* Quick Actions */}
-        <div className="text-center space-y-4">
-          <h2 className="text-2xl font-semibold text-gray-900">Quick Actions</h2>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/world-app">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                <Shield className="h-5 w-5 mr-2" />
-                Start Core Journey
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </Link>
-            <Link href="/trading-world-app">
-              <Button size="lg" variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
-                <Rocket className="h-5 w-5 mr-2" />
-                Launch Token
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </Link>
+          {/* Quick Actions */}
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-semibold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">Quick Actions</h2>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/world-app">
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                  <Shield className="h-5 w-5 mr-2" />
+                  Start Core Journey
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </Link>
+              <Link href="/trading-v2-world-app">
+                <Button size="lg" variant="outline" className="border-purple-500 text-purple-300 hover:bg-purple-900/20">
+                  <BarChart3 className="h-5 w-5 mr-2" />
+                  Trading Interface
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
