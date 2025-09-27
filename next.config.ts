@@ -4,9 +4,6 @@ const nextConfig: NextConfig = {
   /* config options here */
   // output: 'export', // Commented out for Vercel deployment
   // trailingSlash: true, // Commented out for Vercel deployment
-  images: {
-    unoptimized: true,
-  },
   experimental: {
     turbo: {
       rules: {
@@ -28,9 +25,6 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     // !! WARN !!
     ignoreBuildErrors: true,
-  },
-  experimental: {
-    outputFileTracingRoot: undefined,
   },
   images: {
     domains: ['via.placeholder.com'],

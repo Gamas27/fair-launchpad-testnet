@@ -1,27 +1,22 @@
 'use client'
 
-import { useAccount, useBalance, useChainId, useSwitchChain } from 'wagmi'
-import { formatEther } from 'viem'
+import { usePrivyWallet } from './usePrivyWallet'
 
+// Legacy hook - now uses Privy under the hood
 export function useWallet() {
-  const { address, isConnected, connector } = useAccount()
-  const chainId = useChainId()
-  const { switchChain } = useSwitchChain()
+  const privyWallet = usePrivyWallet()
   
-  const { data: balance } = useBalance({
-    address: address,
-  })
-
-  const formattedBalance = balance ? formatEther(balance.value) : '0'
-
   return {
-    address,
-    isConnected,
-    connector,
-    chainId,
-    balance: formattedBalance,
-    symbol: balance?.symbol || 'ETH',
-    switchChain,
+    address: privyWallet.address,
+    isConnected: privyWallet.isConnected,
+    balance: privyWallet.balance,
+    symbol: privyWallet.symbol,
+    chainId: privyWallet.chainId,
+    connector: privyWallet.connector,
+    // Legacy switchChain function - Privy handles this automatically
+    switchChain: async () => {
+      console.warn('switchChain is not needed with Privy - it handles chain switching automatically')
+    },
   }
 }
 

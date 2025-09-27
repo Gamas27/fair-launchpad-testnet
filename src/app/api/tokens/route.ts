@@ -41,7 +41,7 @@ export const GET = withOptionalAuth(async (user, request: NextRequest) => {
     }
     
     const [tokens, total] = await Promise.all([
-      db.prisma.token.findMany({
+      db.getTokens({
         where,
         take: limit,
         skip: offset,
@@ -59,7 +59,7 @@ export const GET = withOptionalAuth(async (user, request: NextRequest) => {
           },
         },
       }),
-      db.prisma.token.count({ where }),
+      db.getTokenCount({ where }),
     ])
     
     // Serialize BigInt values
@@ -117,9 +117,7 @@ export const POST = withOptionalAuth(async (user, request: NextRequest) => {
     }
     
     // Check if symbol is already taken
-    const existingSymbol = await db.prisma.token.findUnique({
-      where: { symbol: tokenData.symbol },
-    })
+    const existingSymbol = await db.getTokenBySymbol(tokenData.symbol)
     if (existingSymbol) {
       throw new Error('Token symbol already taken')
     }

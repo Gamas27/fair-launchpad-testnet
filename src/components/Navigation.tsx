@@ -5,8 +5,10 @@ import {
   Rocket, 
   TrendingUp,
   Shield,
-  User
+  User,
+  TestTube
 } from 'lucide-react'
+import Link from 'next/link'
 
 interface NavigationProps {
   activeTab: string
@@ -49,6 +51,12 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
                 </Button>
               )
             })}
+            <Link href="/test-contracts">
+              <Button variant="outline" size="sm" className="flex items-center gap-1 px-2 py-1 text-xs">
+                <TestTube className="h-3 w-3" />
+                <span className="hidden sm:inline">Test</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

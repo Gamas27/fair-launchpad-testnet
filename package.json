@@ -28,6 +28,8 @@
   "dependencies": {
     "@metamask/detect-provider": "^2.0.0",
     "@prisma/client": "^6.16.2",
+    "@privy-io/react-auth": "^3.0.1",
+    "@privy-io/wagmi": "^2.0.0",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",

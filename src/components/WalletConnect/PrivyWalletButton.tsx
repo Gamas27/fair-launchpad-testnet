@@ -2,11 +2,11 @@
 
 import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { Button } from '@/components/ui/button'
-import { Wallet, LogOut, Copy, Check } from 'lucide-react'
+import { Wallet, LogOut, Copy, Check, User } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-export function WalletButton() {
+export function PrivyWalletButton() {
   const { ready, authenticated, user, login, logout } = usePrivy()
   const { wallets } = useWallets()
   const [copied, setCopied] = useState(false)
@@ -79,5 +79,25 @@ export function WalletButton() {
   )
 }
 
+export function PrivyUserProfile() {
+  const { ready, authenticated, user } = usePrivy()
+  const { wallets } = useWallets()
 
+  if (!ready || !authenticated || !user) {
+    return null
+  }
 
+  return (
+    <div className="flex items-center gap-2 text-sm text-gray-600">
+      <User className="h-4 w-4" />
+      <span>
+        {user.email?.address || user.phone?.number || 'Connected'}
+      </span>
+      {wallets.length > 0 && (
+        <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+          {wallets.length} wallet{wallets.length > 1 ? 's' : ''}
+        </span>
+      )}
+    </div>
+  )
+}

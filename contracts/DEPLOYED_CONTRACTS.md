@@ -1,51 +1,35 @@
-# 🚀 Deployed Contract Addresses
+# 🚀 Deployed Contract Addresses - World Chain
 
 ## **Contract Deployment Status**
 
 ### **✅ Successfully Deployed Contracts**
 
 #### **1. TokenFactory.sol**
-- **Address**: `[YOUR_TOKENFACTORY_ADDRESS]`
+- **Address**: `0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47`
 - **Purpose**: Factory for creating new bonding curve tokens
 - **Features**: Token creation, fee management, admin functions
-- **Constructor Parameters Used**:
-  - `_wldToken`: `0x0000000000000000000000000000000000000000`
-  - `_worldId`: `0x0000000000000000000000000000000000000000`
+- **Network**: World Chain (Chain ID: 480)
 
 #### **2. BondingCurveMinimal.sol**
-- **Address**: `[YOUR_BONDINGCURVE_ADDRESS]`
+- **Address**: `0xd9145CCE52D386f254917e481eB44e9943F39138`
 - **Purpose**: Individual bonding curve contract with World ID verification
 - **Features**: World ID verification, token minting, graduation
-- **Constructor Parameters Used**:
-  - `name`: `[TOKEN_NAME]`
-  - `symbol`: `[TOKEN_SYMBOL]`
-  - `_wldToken`: `0x0000000000000000000000000000000000000000`
-  - `_worldId`: `0x0000000000000000000000000000000000000000`
-  - `_initialPrice`: `1000000000000000000` (1 WLD)
-  - `_maxSupply`: `1000000000000000000000000` (1M tokens)
-  - `_worldIdRoot`: `0xfe84c495df377d350ac75d4b7981ef4e79248da5b8c9e8858629daf5606c57fb`
-  - `_worldIdExternalNullifier`: `0xb48c4cd1d468325c72a85fb338783e00a56ed07c8cbcfaa5e5618487a16e3548`
+- **Network**: World Chain (Chain ID: 480)
 
 #### **3. GraduationHandlerOptimized.sol**
-- **Address**: `[YOUR_GRADUATIONHANDLER_ADDRESS]`
+- **Address**: `0xDA0bab807633f07f013f94DD0E6A4F96F8742B53`
 - **Purpose**: Handles graduation from bonding curve to Uniswap V3
 - **Features**: LP creation, fee distribution, NFT burning
-- **Constructor Parameters Used**:
-  - `_token`: `0x0000000000000000000000000000000000000000`
-  - `_wldToken`: `0x0000000000000000000000000000000000000000`
-  - `_uniswapFactory`: `0x0000000000000000000000000000000000000000`
-  - `_positionManager`: `0x0000000000000000000000000000000000000000`
-  - `_platformFeeRecipient`: `[YOUR_WALLET_ADDRESS]`
-  - `_creatorVestingRecipient`: `[YOUR_WALLET_ADDRESS]`
+- **Network**: World Chain (Chain ID: 480)
 
 ## **🔧 Frontend Configuration**
 
 ### **Environment Variables**
 ```bash
 # Add these to your .env.local file
-NEXT_PUBLIC_TOKEN_FACTORY_ADDRESS=[YOUR_TOKENFACTORY_ADDRESS]
-NEXT_PUBLIC_BONDING_CURVE_ADDRESS=[YOUR_BONDINGCURVE_ADDRESS]
-NEXT_PUBLIC_GRADUATION_HANDLER_ADDRESS=[YOUR_GRADUATIONHANDLER_ADDRESS]
+NEXT_PUBLIC_TOKEN_FACTORY_ADDRESS=0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47
+NEXT_PUBLIC_BONDING_CURVE_ADDRESS=0xd9145CCE52D386f254917e481eB44e9943F39138
+NEXT_PUBLIC_GRADUATION_HANDLER_ADDRESS=0xDA0bab807633f07f013f94DD0E6A4F96F8742B53
 NEXT_PUBLIC_WLD_TOKEN_ADDRESS=0x0000000000000000000000000000000000000000
 NEXT_PUBLIC_WORLD_ID_ADDRESS=0x0000000000000000000000000000000000000000
 ```
@@ -115,7 +99,7 @@ Threshold reached → BondingCurveMinimal._graduate() → GraduationHandlerOptim
 ## **🚨 Security Notes**
 
 ### **Current Configuration**
-- **Using zero addresses** for testing
+- **Using zero addresses** for WLD Token and World ID (testing mode)
 - **No real World ID integration** yet
 - **No real Uniswap integration** yet
 
@@ -127,6 +111,15 @@ Threshold reached → BondingCurveMinimal._graduate() → GraduationHandlerOptim
 - [ ] Security audit
 - [ ] Gas optimization
 
+## **🌐 Network Information**
+
+- **Network**: World Chain
+- **Chain ID**: 480
+- **RPC URL**: https://rpc.worldchain.org
+- **Explorer**: https://worldscan.org
+
 ---
 
 **Deployment completed successfully! 🎉**
+
+**Next Steps**: Update frontend with contract addresses and test integration!

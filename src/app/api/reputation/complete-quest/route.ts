@@ -24,9 +24,7 @@ export const POST = withAuth(async (user, request: NextRequest, context?: { para
   
   try {
     // Get the quest
-    const quest = await db.prisma.reputationQuest.findUnique({
-      where: { id: data.questId },
-    })
+    const quest = await db.getReputationQuest(data.questId)
     
     if (!quest) {
       throw new Error('Quest not found')

@@ -6,13 +6,13 @@ export async function GET(request: NextRequest) {
     const db = DatabaseService.getInstance()
     
     // Check database connectivity
-    await db.prisma.$queryRaw`SELECT 1`
+    await db.testConnection()
     
     // Get basic stats
     const [userCount, tokenCount, tradeCount] = await Promise.all([
-      db.prisma.user.count(),
-      db.prisma.token.count(),
-      db.prisma.trade.count(),
+      db.getUserCount(),
+      db.getTokenCount(),
+      db.getTradeCount(),
     ])
     
     return NextResponse.json({

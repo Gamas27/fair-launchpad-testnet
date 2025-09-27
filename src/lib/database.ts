@@ -288,6 +288,44 @@ export class DatabaseService {
     })
   }
 
+  // Token operations
+  async getTokens(params: any) {
+    return this.prisma.token.findMany(params)
+  }
+
+  async getTokenCount(params: any) {
+    return this.prisma.token.count(params)
+  }
+
+  async getToken(address: string) {
+    return this.prisma.token.findUnique({
+      where: { address },
+      include: {
+        creator: true,
+        trades: true,
+      },
+    })
+  }
+
+  async getTokenBySymbol(symbol: string) {
+    return this.prisma.token.findUnique({
+      where: { symbol },
+    })
+  }
+
+  async createToken(data: any) {
+    return this.prisma.token.create({
+      data,
+    })
+  }
+
+  async updateToken(address: string, data: any) {
+    return this.prisma.token.update({
+      where: { address },
+      data,
+    })
+  }
+
   // Session operations
   async createSession(data: {
     userAddress: string
@@ -361,6 +399,65 @@ export class DatabaseService {
       totalVolume: totalVolume._sum.totalValue || 0,
       tokensTraded: tokensTraded.length,
     }
+  }
+
+  // Health check methods
+  async testConnection(): Promise<void> {
+    await this.prisma.$queryRaw`SELECT 1`
+  }
+
+  async getUserCount(): Promise<number> {
+    return this.prisma.user.count()
+  }
+
+  async getTokenCount(): Promise<number> {
+    return this.prisma.token.count()
+  }
+
+  async getTradeCount(): Promise<number> {
+    return this.prisma.trade.count()
+  }
+
+  // Reputation quest methods
+  async getReputationQuest(questId: string) {
+    return this.prisma.reputationQuest.findUnique({
+      where: { id: questId },
+    })
+  }
+
+  async getUserReputationQuest(userId: string, questId: string) {
+    return this.prisma.userReputationQuest.findFirst({
+      where: {
+        userId,
+        questId,
+      },
+    })
+  }
+
+  async completeReputationQuest(userId: string, questId: string) {
+    return this.prisma.userReputationQuest.create({
+      data: {
+        userId,
+        questId,
+        completedAt: new Date(),
+      },
+    })
+  }
+
+  async getUserReputationQuestCount(userId: string): Promise<number> {
+    return this.prisma.userReputationQuest.count({
+      where: { userId },
+    })
+  }
+
+  async updateUserReputation(userId: string, reputationPoints: number, reputationLevel: number) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        reputationPoints,
+        reputationLevel,
+      },
+    })
   }
 }
 

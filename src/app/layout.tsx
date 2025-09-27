@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Providers } from "@/providers/WagmiProvider";
+import { PrivyProvider } from "@/providers/PrivyProvider";
 import { SafeWorldIdProvider } from "@/providers/SafeWorldIdProvider";
 import { MiniAppWrapper } from "@/components/WorldApp/MiniAppWrapper";
 
@@ -33,7 +33,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <MiniAppWrapper>
-          <Providers>
+          <PrivyProvider>
             <SafeWorldIdProvider
               config={{
                 appId: process.env.NEXT_PUBLIC_WORLD_ID_APP_ID || 'app_staging_1234567890abcdef',
@@ -43,7 +43,7 @@ export default function RootLayout({
             >
               {children}
             </SafeWorldIdProvider>
-          </Providers>
+          </PrivyProvider>
         </MiniAppWrapper>
       </body>
     </html>

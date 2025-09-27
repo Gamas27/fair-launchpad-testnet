@@ -3,11 +3,9 @@ import { mainnet, sepolia, polygon, arbitrum } from 'wagmi/chains'
 import { injected, walletConnect, metaMask } from 'wagmi/connectors'
 
 // Get projectId from https://cloud.walletconnect.com
-export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || ''
+export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'demo-project-id'
 
-if (!projectId) {
-  throw new Error('Project ID is not defined')
-}
+// Note: This is legacy Wagmi config - now using Privy for wallet connections
 
 // Create wagmi config
 export const config = createConfig({
@@ -16,7 +14,7 @@ export const config = createConfig({
     injected(),
     metaMask(),
     walletConnect({
-      projectId,
+      projectId: projectId || 'demo-project-id',
       metadata: {
         name: 'FairLaunch UI',
         description: 'Anti-Bot Meme Coin Launchpad',

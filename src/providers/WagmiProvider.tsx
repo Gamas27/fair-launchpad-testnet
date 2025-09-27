@@ -17,5 +17,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   )
 }
 
+// Legacy provider - use PrivyProvider instead
+export function WagmiProviderLegacy({ children }: { children: React.ReactNode }) {
+  return <Providers>{children}</Providers>
+}
+
 
 
