@@ -11,7 +11,6 @@ import {
   BarChart3,
   Home,
   TrendingUp,
-  Settings,
   Plus,
   ArrowRight,
   CheckCircle,
@@ -218,14 +217,11 @@ export default function MainApp() {
     <div className="min-h-screen bg-black text-white pb-16">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-black/90 backdrop-blur-md border-b border-gray-800/50">
-        <div className="flex items-center justify-between p-3">
+        <div className="flex items-center justify-center p-3">
           <div className="flex items-center gap-2">
             <div className="text-lg font-bold gradient-text">FairLaunch</div>
             <Badge className="bg-green-500 text-white text-xs font-bold animate-pulse">LIVE</Badge>
           </div>
-          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-            <Settings className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
