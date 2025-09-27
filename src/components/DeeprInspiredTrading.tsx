@@ -39,32 +39,149 @@ interface Token {
 }
 
 export default function DeeprInspiredTrading() {
-  const [selectedToken, setSelectedToken] = useState<Token | null>(null)
-  const [tokens, setTokens] = useState<Token[]>([])
+  const [selectedToken, setSelectedToken] = useState<Token | null>({
+    address: '0x1234567890123456789012345678901234567890',
+    name: 'Test Token',
+    symbol: 'TEST',
+    description: 'A test token for demonstration',
+    imageUrl: 'https://via.placeholder.com/100x100/4F46E5/FFFFFF?text=TEST',
+    currentPrice: 0.001,
+    totalVolume: 1000,
+    totalTrades: 50,
+    marketCap: 10000,
+    status: 'active',
+    creator: {
+      walletAddress: '0x1234567890123456789012345678901234567890',
+      reputationLevel: 'Gold',
+      verificationLevel: 'device'
+    },
+    _count: {
+      trades: 50
+    }
+  })
+  const [tokens, setTokens] = useState<Token[]>([
+    {
+      address: '0x1234567890123456789012345678901234567890',
+      name: 'Test Token',
+      symbol: 'TEST',
+      description: 'A test token for demonstration',
+      imageUrl: 'https://via.placeholder.com/100x100/4F46E5/FFFFFF?text=TEST',
+      currentPrice: 0.001,
+      totalVolume: 1000,
+      totalTrades: 50,
+      marketCap: 10000,
+      status: 'active',
+      creator: {
+        walletAddress: '0x1234567890123456789012345678901234567890',
+        reputationLevel: 'Gold',
+        verificationLevel: 'device'
+      },
+      _count: {
+        trades: 50
+      }
+    }
+  ])
   const [buyAmount, setBuyAmount] = useState("")
   const [sellAmount, setSellAmount] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingTokens, setIsLoadingTokens] = useState(false)
   const [activeTab, setActiveTab] = useState<'buy' | 'sell'>('buy')
   const { isVerified, verificationLevel } = useSafeWorldId()
 
-  useEffect(() => {
-    fetchTokens()
-  }, [fetchTokens])
-
   const fetchTokens = useCallback(async () => {
+    console.log('DeeprInspiredTrading: Starting fetchTokens...')
+    setIsLoadingTokens(true)
+    
     try {
-      const response = await fetch('/api/tokens')
-      if (response.ok) {
-        const data = await response.json()
-        setTokens(data.data.data || [])
-        if (data.data.data?.length > 0 && !selectedToken) {
-          setSelectedToken(data.data.data[0])
+      // Use mock data directly for now
+      console.log('DeeprInspiredTrading: Using mock data for demonstration')
+      const mockTokens = [
+        {
+          address: '0x1234567890123456789012345678901234567890',
+          name: 'Test Token',
+          symbol: 'TEST',
+          description: 'A test token for demonstration',
+          imageUrl: 'https://via.placeholder.com/100x100/4F46E5/FFFFFF?text=TEST',
+          currentPrice: 0.001,
+          totalVolume: 1000,
+          totalTrades: 50,
+          marketCap: 10000,
+          status: 'active',
+          creator: {
+            walletAddress: '0x1234567890123456789012345678901234567890',
+            reputationLevel: 'Gold',
+            verificationLevel: 'device'
+          },
+          _count: {
+            trades: 50
+          }
         }
-      }
+      ]
+      
+      // Simulate a small delay
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      setTokens(mockTokens)
+      setSelectedToken(mockTokens[0])
+      console.log('DeeprInspiredTrading: Mock data loaded successfully')
     } catch (error) {
-      console.error('Failed to fetch tokens:', error)
+      console.error('DeeprInspiredTrading: Error loading tokens:', error)
+    } finally {
+      setIsLoadingTokens(false)
     }
-  }, [selectedToken])
+  }, [])
+
+  useEffect(() => {
+    console.log('DeeprInspiredTrading: useEffect triggered')
+    // Add a small delay to ensure component is mounted
+    const timer = setTimeout(() => {
+      fetchTokens()
+    }, 100)
+    
+    // Fallback timeout to prevent infinite loading
+    const fallbackTimer = setTimeout(() => {
+      if (isLoadingTokens) {
+        console.log('DeeprInspiredTrading: Fallback timeout triggered, forcing load completion')
+        setIsLoadingTokens(false)
+        // Load mock data directly
+        const mockTokens = [
+          {
+            address: '0x1234567890123456789012345678901234567890',
+            name: 'Test Token',
+            symbol: 'TEST',
+            description: 'A test token for demonstration',
+            imageUrl: 'https://via.placeholder.com/100x100/4F46E5/FFFFFF?text=TEST',
+            currentPrice: 0.001,
+            totalVolume: 1000,
+            totalTrades: 50,
+            marketCap: 10000,
+            status: 'active',
+            creator: {
+              walletAddress: '0x1234567890123456789012345678901234567890',
+              reputationLevel: 'Gold',
+              verificationLevel: 'device'
+            },
+            _count: {
+              trades: 50
+            }
+          }
+        ]
+        setTokens(mockTokens)
+        setSelectedToken(mockTokens[0])
+      }
+    }, 2000)
+    
+    return () => {
+      clearTimeout(timer)
+      clearTimeout(fallbackTimer)
+    }
+  }, [])
+
+  // Debug logging
+  useEffect(() => {
+    console.log('DeeprInspiredTrading: Tokens updated:', tokens.length, 'tokens')
+    console.log('DeeprInspiredTrading: Selected token:', selectedToken)
+  }, [tokens, selectedToken])
 
   const handleTrade = async () => {
     if (!isVerified) {
@@ -128,6 +245,24 @@ export default function DeeprInspiredTrading() {
     }
   }
 
+  if (isLoadingTokens) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center space-y-4">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            Fair Trading Hub
+          </h1>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            Loading trading interface...
+          </p>
+        </div>
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin h-8 w-8 border-4 border-cyan-400 border-t-transparent rounded-full"></div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Header with Deepr.fun style */}
@@ -153,7 +288,13 @@ export default function DeeprInspiredTrading() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tokens.map((token) => (
+            {tokens.length === 0 ? (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-400 mb-4">No tokens available for trading</p>
+                <p className="text-sm text-gray-500">Try launching a new token first!</p>
+              </div>
+            ) : (
+              tokens.map((token) => (
               <Card 
                 key={token.address}
                 className={`cursor-pointer transition-all hover:shadow-lg ${
@@ -205,7 +346,8 @@ export default function DeeprInspiredTrading() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

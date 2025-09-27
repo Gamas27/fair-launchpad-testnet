@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { usePrivyWallet } from '@/hooks/usePrivyWallet'
+import { useAuth } from '@/contexts/AuthContext'
 import { contractService } from '@/lib/contracts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,7 +15,7 @@ interface TokenCreationFormProps {
 }
 
 export function TokenCreationForm({ onTokenCreated }: TokenCreationFormProps) {
-  const { address, isConnected } = usePrivyWallet()
+  const { address, isConnected } = useAuth()
   const [isCreating, setIsCreating] = useState(false)
   const [createdToken, setCreatedToken] = useState<string | null>(null)
   const [formData, setFormData] = useState({

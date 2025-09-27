@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAccount, useSigner } from 'wagmi';
+import { usePrivyWallet } from './usePrivyWallet';
 import { contractService, CONTRACT_ADDRESSES } from '@/lib/contracts';
 import { ethers } from 'ethers';
 
@@ -20,20 +20,20 @@ export interface TokenInfo {
 }
 
 export function useSmartContracts() {
-  const { address, isConnected } = useAccount();
-  const { data: signer } = useSigner();
+  const { address, isConnected, publicClient } = usePrivyWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tokens, setTokens] = useState<TokenInfo[]>([]);
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
   const [bondingCurveState, setBondingCurveState] = useState<BondingCurveState | null>(null);
 
-  // Initialize contract service with signer
+  // Initialize contract service with public client
   useEffect(() => {
-    if (signer) {
-      contractService.signer = signer;
+    if (publicClient) {
+      // Note: contractService will handle signer setup when needed
+      // For now, we'll use the public client for read operations
     }
-  }, [signer]);
+  }, [publicClient]);
 
   // Load all tokens
   const loadTokens = useCallback(async () => {
@@ -73,7 +73,7 @@ export function useSmartContracts() {
     maxSupply: string,
     initialPrice: string
   ) => {
-    if (!isConnected || !signer) {
+    if (!isConnected) {
       throw new Error('Wallet not connected');
     }
 
@@ -93,7 +93,7 @@ export function useSmartContracts() {
     } finally {
       setIsLoading(false);
     }
-  }, [isConnected, signer, loadTokens]);
+  }, [isConnected, loadTokens]);
 
   // Buy tokens
   const buyTokens = useCallback(async (
@@ -102,7 +102,7 @@ export function useSmartContracts() {
     nullifierHash: string,
     proof: number[]
   ) => {
-    if (!isConnected || !signer) {
+    if (!isConnected) {
       throw new Error('Wallet not connected');
     }
 
@@ -122,7 +122,7 @@ export function useSmartContracts() {
     } finally {
       setIsLoading(false);
     }
-  }, [isConnected, signer]);
+  }, [isConnected]);
 
   // Load bonding curve state
   const loadBondingCurveState = useCallback(async (tokenAddress: string) => {

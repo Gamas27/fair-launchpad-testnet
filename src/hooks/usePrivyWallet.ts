@@ -1,54 +1,85 @@
 'use client'
 
 import { usePrivy, useWallets } from '@privy-io/react-auth'
-import { useAccount, useBalance, useChainId } from 'wagmi'
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect, useCallback } from 'react'
+import { PublicClient, createPublicClient, http } from 'viem'
+import { mainnet, sepolia, polygon, arbitrum } from 'viem/chains'
 
-export function usePrivyWallet() {
-  const { ready, authenticated, user, login, logout } = usePrivy()
+interface PrivyWalletState {
+  address: string | null
+  isConnected: boolean
+  balance: string | null
+  symbol: string | null
+  chainId: number | null
+  connector: string | null
+  user: any | null // Privy user object
+  isEmailUser: boolean
+  isPhoneUser: boolean
+  publicClient: PublicClient | null
+}
+
+export function usePrivyWallet(): PrivyWalletState {
+  const { ready, authenticated, user } = usePrivy()
   const { wallets } = useWallets()
-  const { address, isConnected } = useAccount()
-  const { data: balance } = useBalance({ address })
-  const chainId = useChainId()
+  const embeddedWallet = wallets.find((wallet) => wallet.walletClientType === 'privy')
+  const activeWallet = embeddedWallet || wallets[0] // Prioritize embedded, then any other connected
 
-  const walletInfo = useMemo(() => {
-    if (!authenticated || !user?.wallet) {
-      return {
-        isConnected: false,
-        address: null,
-        balance: '0',
-        chainId: null,
-        connector: null,
-        symbol: 'ETH',
-        user: null,
-        wallets: [],
+  const [balance, setBalance] = useState<string | null>(null)
+  const [symbol, setSymbol] = useState<string | null>(null)
+  const [chainId, setChainId] = useState<number | null>(null)
+
+  const address = activeWallet?.address || null
+  const isConnected = ready && authenticated && !!address
+
+  const publicClient = useMemo(() => {
+    if (!activeWallet) return null
+    const chain = [mainnet, sepolia, polygon, arbitrum].find(c => c.id === activeWallet.chainId)
+    if (!chain) return null
+    return createPublicClient({
+      chain,
+      transport: http(),
+    })
+  }, [activeWallet])
+
+  const fetchBalance = useCallback(async () => {
+    if (publicClient && address) {
+      try {
+        const balanceWei = await publicClient.getBalance({ address: address as `0x${string}` })
+        setBalance((Number(balanceWei) / 10 ** 18).toFixed(4)) // Convert wei to ETH
+        setSymbol(publicClient.chain?.nativeCurrency?.symbol || 'ETH')
+        setChainId(publicClient.chain?.id || null)
+      } catch (error) {
+        console.error('Failed to fetch balance:', error)
+        setBalance(null)
+        setSymbol(null)
+        setChainId(null)
       }
+    } else {
+      setBalance(null)
+      setSymbol(null)
+      setChainId(null)
     }
+  }, [publicClient, address])
 
-    return {
-      isConnected: authenticated && !!user.wallet.address,
-      address: user.wallet.address,
-      balance: balance?.formatted || '0',
-      chainId: chainId || null,
-      connector: user.wallet.connectorType || 'privy',
-      symbol: balance?.symbol || 'ETH',
-      user: user,
-      wallets: wallets,
-    }
-  }, [authenticated, user, address, balance, chainId, wallets])
+  useEffect(() => {
+    fetchBalance()
+    const interval = setInterval(fetchBalance, 10000) // Refresh balance every 10 seconds
+    return () => clearInterval(interval)
+  }, [fetchBalance])
+
+  const isEmailUser = user?.email?.address === user?.id
+  const isPhoneUser = user?.phone?.number === user?.id
 
   return {
-    ...walletInfo,
-    ready,
-    login,
-    logout,
-    // Additional Privy-specific methods
-    isEmailUser: !!user?.email,
-    isPhoneUser: !!user?.phone,
-    isGoogleUser: !!user?.google,
-    isTwitterUser: !!user?.twitter,
-    isDiscordUser: !!user?.discord,
-    hasEmbeddedWallet: wallets.some(wallet => wallet.walletClientType === 'privy'),
-    hasExternalWallet: wallets.some(wallet => wallet.walletClientType !== 'privy'),
+    address,
+    isConnected,
+    balance,
+    symbol,
+    chainId,
+    connector: activeWallet?.connectorType || null,
+    user,
+    isEmailUser,
+    isPhoneUser,
+    publicClient,
   }
 }

@@ -4,15 +4,16 @@ import { PrivyProvider as PrivyProviderBase } from '@privy-io/react-auth'
 import { WagmiProvider } from '@privy-io/wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createConfig, http } from 'wagmi'
-import { mainnet, sepolia, polygon, arbitrum } from 'wagmi/chains'
+import { mainnet, sepolia, goerli, polygon, arbitrum } from 'wagmi/chains'
 import { ReactNode, useState } from 'react'
 
-// Create a Wagmi config for Privy
+// Create a Wagmi config for Privy with testnet support
 const wagmiConfig = createConfig({
-  chains: [mainnet, sepolia, polygon, arbitrum],
+  chains: [sepolia, goerli, mainnet, polygon, arbitrum], // Sepolia first for testing
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
+    [goerli.id]: http(),
     [polygon.id]: http(),
     [arbitrum.id]: http(),
   },

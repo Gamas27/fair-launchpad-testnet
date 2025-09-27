@@ -1,22 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAccount, useSigner } from 'wagmi';
+import { usePrivyWallet } from './usePrivyWallet';
 import { graduationService, GraduationStatus, GraduationEvent } from '@/lib/graduation';
 
 export function useGraduation(tokenAddress?: string) {
-  const { address, isConnected } = useAccount();
-  const { data: signer } = useSigner();
+  const { address, isConnected, publicClient } = usePrivyWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [graduationStatus, setGraduationStatus] = useState<GraduationStatus | null>(null);
   const [graduationEvents, setGraduationEvents] = useState<GraduationEvent[]>([]);
   const [isMonitoring, setIsMonitoring] = useState(false);
 
-  // Initialize graduation service with signer
+  // Initialize graduation service with public client
   useEffect(() => {
-    if (signer) {
-      graduationService.signer = signer;
+    if (publicClient) {
+      // Note: graduationService will handle signer setup when needed
+      // For now, we'll use the public client for read operations
     }
-  }, [signer]);
+  }, [publicClient]);
 
   // Load graduation status
   const loadGraduationStatus = useCallback(async () => {

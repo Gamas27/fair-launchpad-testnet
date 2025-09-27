@@ -1,235 +1,327 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { TrendingUp, TrendingDown, DollarSign, BarChart3 } from "lucide-react"
-import { useState } from "react"
-import { useSafeWorldId } from "@/providers/SafeWorldIdProvider"
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { TrendingUp, TrendingDown, BarChart3, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, Star, Activity } from 'lucide-react'
+import { useSafeWorldId } from '@/providers/SafeWorldIdProvider'
+
+interface Token {
+  address: string
+  name: string
+  symbol: string
+  description: string
+  imageUrl?: string
+  currentPrice: number
+  totalVolume: number
+  totalTrades: number
+  marketCap: number
+  status: string
+  creator: {
+    walletAddress: string
+    reputationLevel: string
+    verificationLevel: string
+  }
+  _count: {
+    trades: number
+  }
+}
 
 export default function SimpleTrading() {
+  const [selectedToken, setSelectedToken] = useState<Token | null>(null)
+  const [tokens, setTokens] = useState<Token[]>([])
   const [buyAmount, setBuyAmount] = useState("")
   const [sellAmount, setSellAmount] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const { isVerified } = useSafeWorldId()
+  const [activeTab, setActiveTab] = useState<'buy' | 'sell'>('buy')
+  const { isVerified, verificationLevel } = useSafeWorldId()
 
-  const handleBuy = async () => {
+  useEffect(() => {
+    console.log('SimpleTrading: Loading mock data...')
+    // Load mock data immediately
+    const mockTokens = [
+      {
+        address: '0x1234567890123456789012345678901234567890',
+        name: 'Test Token',
+        symbol: 'TEST',
+        description: 'A test token for demonstration',
+        imageUrl: 'https://via.placeholder.com/100x100/4F46E5/FFFFFF?text=TEST',
+        currentPrice: 0.001,
+        totalVolume: 1000,
+        totalTrades: 50,
+        marketCap: 10000,
+        status: 'active',
+        creator: {
+          walletAddress: '0x1234567890123456789012345678901234567890',
+          reputationLevel: 'Gold',
+          verificationLevel: 'device'
+        },
+        _count: {
+          trades: 50
+        }
+      }
+    ]
+    
+    setTokens(mockTokens)
+    setSelectedToken(mockTokens[0])
+    console.log('SimpleTrading: Mock data loaded')
+  }, [])
+
+  const handleTrade = async () => {
     if (!isVerified) {
       alert("Please verify with World ID first!")
       return
     }
-    
-    const amount = parseFloat(buyAmount)
+
+    if (!selectedToken) {
+      alert("Please select a token to trade")
+      return
+    }
+
+    const amount = parseFloat(activeTab === 'buy' ? buyAmount : sellAmount)
     if (amount <= 0) {
       alert("Invalid amount")
       return
     }
-    
+
     setIsLoading(true)
     try {
       await new Promise(resolve => setTimeout(resolve, 2000))
-      alert(`Successfully bought ${amount} WLD worth of tokens!`)
-      setBuyAmount("")
+      alert(`Successfully ${activeTab === 'buy' ? 'bought' : 'sold'} ${amount} WLD worth of ${selectedToken.symbol}!`)
+      
+      if (activeTab === 'buy') {
+        setBuyAmount("")
+      } else {
+        setSellAmount("")
+      }
     } catch (error) {
-      alert("Buy failed. Please try again.")
+      alert(`${activeTab === 'buy' ? 'Buy' : 'Sell'} failed. Please try again.`)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleSell = async () => {
-    if (!isVerified) {
-      alert("Please verify with World ID first!")
-      return
-    }
-    
-    const amount = parseFloat(sellAmount)
-    if (amount <= 0) {
-      alert("Invalid amount")
-      return
-    }
-    
-    setIsLoading(true)
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      alert(`Successfully sold ${amount} WLD worth of tokens!`)
-      setSellAmount("")
-    } catch (error) {
-      alert("Sell failed. Please try again.")
-    } finally {
-      setIsLoading(false)
+  const getReputationColor = (level: string) => {
+    switch (level.toLowerCase()) {
+      case 'gold':
+        return 'text-yellow-500 bg-yellow-500/10'
+      case 'silver':
+        return 'text-gray-400 bg-gray-500/10'
+      case 'bronze':
+        return 'text-orange-500 bg-orange-500/10'
+      default:
+        return 'text-gray-500 bg-gray-500/10'
     }
   }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-500'
+      case 'launching':
+        return 'bg-yellow-500'
+      case 'completed':
+        return 'bg-blue-500'
+      case 'failed':
+        return 'bg-red-500'
+      default:
+        return 'bg-gray-500'
+    }
+  }
+
   return (
-    <div className="space-y-4">
-      {/* Market Overview */}
-      <Card className="bg-card/50 backdrop-blur-sm border-cyan-500/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-cyan-400" />
-            Market Overview
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <div className="text-gray-400">Total Volume</div>
-              <div className="font-semibold text-lg">$2.4M</div>
-            </div>
-            <div>
-              <div className="text-gray-400">24h Change</div>
-              <div className="font-semibold text-green-400 text-lg">+12.5%</div>
-            </div>
-            <div>
-              <div className="text-gray-400">Active Traders</div>
-              <div className="font-semibold text-lg">1,247</div>
-            </div>
-            <div>
-              <div className="text-gray-400">Fair Trades</div>
-              <div className="font-semibold text-green-400 text-lg">98.2%</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="space-y-6">
+      <div className="text-center space-y-4">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+          Fair Trading Hub
+        </h1>
+        <p className="text-gray-400 max-w-2xl mx-auto">
+          Trade tokens with anti-manipulation protection
+        </p>
+      </div>
 
-      {/* Quick Trade */}
-      <Card className="bg-card/50 backdrop-blur-sm border-green-500/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-green-400" />
-            Quick Trade
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0 space-y-4">
-          {/* Buy */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Buy Amount (WLD)</label>
-            <div className="flex gap-2">
-              <Input 
-                type="number" 
-                placeholder="0.00"
-                className="flex-1"
-                value={buyAmount}
-                onChange={(e) => setBuyAmount(e.target.value)}
-              />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setBuyAmount("1000")}
-              >
-                Max
-              </Button>
-            </div>
-            <Button 
-              className="w-full bg-green-600 hover:bg-green-700"
-              onClick={handleBuy}
-              disabled={isLoading || !isVerified}
-            >
-              <TrendingUp className="h-4 w-4 mr-2" />
-              {isLoading ? "Buying..." : "Buy"}
-            </Button>
-          </div>
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Token List */}
+        <div className="lg:col-span-1">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Available Tokens
+              </CardTitle>
+              <CardDescription>
+                Select a token to trade
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {tokens.map((token) => (
+                <div
+                  key={token.address}
+                  className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                    selectedToken?.address === token.address
+                      ? 'border-cyan-400 bg-cyan-400/10'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => setSelectedToken(token)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold">
+                      {token.symbol.charAt(0)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold">{token.name}</h3>
+                        <Badge variant="secondary" className="text-xs">
+                          {token.symbol}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-500">{token.description}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-medium">${token.currentPrice.toFixed(6)}</div>
+                      <div className="text-xs text-gray-500">${token.marketCap.toLocaleString()}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
 
-          {/* Sell */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Sell Amount (WLD)</label>
-            <div className="flex gap-2">
-              <Input 
-                type="number" 
-                placeholder="0.00"
-                className="flex-1"
-                value={sellAmount}
-                onChange={(e) => setSellAmount(e.target.value)}
-              />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setSellAmount("500")}
-              >
-                Max
-              </Button>
-            </div>
-            <Button 
-              variant="outline" 
-              className="w-full border-red-500 text-red-500 hover:bg-red-50"
-              onClick={handleSell}
-              disabled={isLoading || !isVerified}
-            >
-              <TrendingDown className="h-4 w-4 mr-2" />
-              {isLoading ? "Selling..." : "Sell"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Trading Interface */}
+        <div className="lg:col-span-2">
+          {selectedToken ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Trade {selectedToken.symbol}
+                </CardTitle>
+                <CardDescription>
+                  Current price: ${selectedToken.currentPrice.toFixed(6)}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Token Info */}
+                <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg">
+                    {selectedToken.symbol.charAt(0)}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg">{selectedToken.name}</h3>
+                    <p className="text-gray-500">{selectedToken.description}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold">${selectedToken.currentPrice.toFixed(6)}</div>
+                    <div className="text-sm text-gray-500">Market Cap: ${selectedToken.marketCap.toLocaleString()}</div>
+                  </div>
+                </div>
 
-      {/* Recent Trades */}
-      <Card className="bg-card/50 backdrop-blur-sm border-blue-500/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-blue-400" />
-            Recent Trades
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between items-center py-2 border-b border-gray-700/50">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span>Buy</span>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold">500 WLD</div>
-                <div className="text-xs text-gray-400">2 min ago</div>
-              </div>
-            </div>
-            <div className="flex justify-between items-center py-2 border-b border-gray-700/50">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                <span>Sell</span>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold">250 WLD</div>
-                <div className="text-xs text-gray-400">5 min ago</div>
-              </div>
-            </div>
-            <div className="flex justify-between items-center py-2">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span>Buy</span>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold">1,000 WLD</div>
-                <div className="text-xs text-gray-400">8 min ago</div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+                {/* Trading Tabs */}
+                <div className="flex gap-2">
+                  <Button
+                    variant={activeTab === 'buy' ? 'default' : 'outline'}
+                    onClick={() => setActiveTab('buy')}
+                    className="flex-1"
+                  >
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    Buy
+                  </Button>
+                  <Button
+                    variant={activeTab === 'sell' ? 'default' : 'outline'}
+                    onClick={() => setActiveTab('sell')}
+                    className="flex-1"
+                  >
+                    <TrendingDown className="h-4 w-4 mr-2" />
+                    Sell
+                  </Button>
+                </div>
 
-      {/* Your Portfolio */}
-      <Card className="bg-card/50 backdrop-blur-sm border-purple-500/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Your Portfolio</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span>Total Value</span>
-              <span className="font-semibold text-lg">$2,450</span>
-            </div>
-            <div className="flex justify-between">
-              <span>WLD Balance</span>
-              <span className="font-semibold">1,500 WLD</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Token Holdings</span>
-              <span className="font-semibold">950 WLD</span>
-            </div>
-            <div className="flex justify-between">
-              <span>24h P&L</span>
-              <span className="font-semibold text-green-400">+$125</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+                {/* Trading Form */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Amount in WLD
+                    </label>
+                    <Input
+                      type="number"
+                      placeholder="0.0"
+                      value={activeTab === 'buy' ? buyAmount : sellAmount}
+                      onChange={(e) => {
+                        if (activeTab === 'buy') {
+                          setBuyAmount(e.target.value)
+                        } else {
+                          setSellAmount(e.target.value)
+                        }
+                      }}
+                      className="text-lg"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-gray-600">
+                      You will receive:
+                    </span>
+                    <span className="font-semibold">
+                      {activeTab === 'buy' 
+                        ? buyAmount ? `${(parseFloat(buyAmount) / selectedToken.currentPrice).toFixed(2)} ${selectedToken.symbol}` : '0'
+                        : sellAmount ? `${(parseFloat(sellAmount) * selectedToken.currentPrice).toFixed(2)} WLD` : '0'
+                      }
+                    </span>
+                  </div>
+
+                  <Button
+                    onClick={handleTrade}
+                    disabled={isLoading || !isVerified}
+                    className="w-full"
+                    size="lg"
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        {activeTab === 'buy' ? (
+                          <>
+                            <TrendingUp className="h-4 w-4 mr-2" />
+                            Buy {selectedToken.symbol}
+                          </>
+                        ) : (
+                          <>
+                            <TrendingDown className="h-4 w-4 mr-2" />
+                            Sell {selectedToken.symbol}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Button>
+
+                  {!isVerified && (
+                    <div className="text-center p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <Shield className="h-5 w-5 text-yellow-500 mx-auto mb-2" />
+                      <p className="text-sm text-yellow-700">
+                        Please verify with World ID to start trading
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardContent className="text-center py-12">
+                <BarChart3 className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No Token Selected</h3>
+                <p className="text-gray-500">Please select a token from the list to start trading</p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

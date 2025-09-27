@@ -51,6 +51,80 @@ export class ContractService {
     this.signer = signer || null;
   }
 
+  // Method to set signer from connected wallet
+  setSigner(signer: ethers.Signer) {
+    this.signer = signer;
+  }
+
+  // Method to get signer (throws error if not set)
+  getSigner(): ethers.Signer {
+    if (!this.signer) {
+      throw new Error('Signer not set. Please connect your wallet first.');
+    }
+    return this.signer;
+  }
+
+  // Method to create token using Privy wallet
+  async createTokenWithPrivyWallet(wallet: any, name: string, symbol: string, initialPrice: string, maxSupply: string) {
+    const tokenFactoryAddress = CONTRACT_ADDRESSES.TOKEN_FACTORY;
+    
+    try {
+      // Get the Ethereum provider from Privy wallet
+      const provider = await wallet.getEthereumProvider();
+      
+      // Create ethers.js provider and signer (v6 syntax)
+      const ethersProvider = new ethers.BrowserProvider(provider);
+      const signer = await ethersProvider.getSigner();
+      
+      // Create contract instance with the signer
+      const contract = new ethers.Contract(tokenFactoryAddress, TOKEN_FACTORY_ABI, signer);
+      
+      // Call createToken function
+      const tx = await contract.createToken(name, symbol, maxSupply, initialPrice);
+      
+      // Wait for transaction to be mined
+      const receipt = await tx.wait();
+      
+      return {
+        transactionHash: tx.hash,
+        receipt: receipt,
+        tokenAddress: this.extractTokenAddressFromReceipt(receipt)
+      };
+    } catch (error) {
+      console.error('Error creating token with Privy wallet:', error);
+      throw error;
+    }
+  }
+
+  // Helper method to encode createToken function call
+  private encodeCreateTokenData(name: string, symbol: string, maxSupply: string, initialPrice: string): string {
+    const iface = new ethers.Interface(TOKEN_FACTORY_ABI);
+    return iface.encodeFunctionData('createToken', [name, symbol, maxSupply, initialPrice]);
+  }
+
+  // Helper method to extract token address from transaction receipt
+  private extractTokenAddressFromReceipt(receipt: any): string | null {
+    try {
+      // Look for TokenCreated event in the logs
+      const iface = new ethers.Interface(TOKEN_FACTORY_ABI);
+      for (const log of receipt.logs) {
+        try {
+          const parsedLog = iface.parseLog(log);
+          if (parsedLog && parsedLog.name === 'TokenCreated') {
+            return parsedLog.args.token; // Return the token address from the event
+          }
+        } catch (e) {
+          // Continue to next log if parsing fails
+          continue;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error('Error extracting token address:', error);
+      return null;
+    }
+  }
+
   // Get contract instance
   private getContract(address: string, abi: any[]) {
     if (this.signer) {
@@ -64,7 +138,7 @@ export class ContractService {
     if (!this.signer) throw new Error('Signer required for token creation');
     
     const factory = this.getContract(CONTRACT_ADDRESSES.TOKEN_FACTORY, TOKEN_FACTORY_ABI);
-    const tx = await factory.createToken(name, symbol, ethers.utils.parseEther(maxSupply), ethers.utils.parseEther(initialPrice));
+    const tx = await factory.createToken(name, symbol, ethers.parseEther(maxSupply), ethers.parseEther(initialPrice));
     return await tx.wait();
   }
 
@@ -84,7 +158,7 @@ export class ContractService {
     
     const bondingCurve = this.getContract(tokenAddress, BONDING_CURVE_ABI);
     const tx = await bondingCurve.buy(
-      ethers.utils.parseEther(wldAmount),
+      ethers.parseEther(wldAmount),
       nullifierHash,
       proof
     );
@@ -98,7 +172,7 @@ export class ContractService {
 
   async calculateTokensForWLD(tokenAddress: string, wldAmount: string) {
     const bondingCurve = this.getContract(tokenAddress, BONDING_CURVE_ABI);
-    return await bondingCurve.calculateTokensForWLD(ethers.utils.parseEther(wldAmount));
+    return await bondingCurve.calculateTokensForWLD(ethers.parseEther(wldAmount));
   }
 
   async isTokenGraduated(tokenAddress: string) {
@@ -123,8 +197,8 @@ export class ContractService {
       tokenAddress,
       CONTRACT_ADDRESSES.WLD_TOKEN,
       state.price,
-      ethers.utils.parseEther(wldAmount),
-      ethers.utils.parseEther(tokenAmount)
+      ethers.parseEther(wldAmount),
+      ethers.parseEther(tokenAmount)
     );
     return await tx.wait();
   }
@@ -145,14 +219,32 @@ export class ContractService {
     factory.on('TokenCreated', callback);
   }
 
+  // Get contract addresses
+  getTokenFactoryAddress() {
+    return CONTRACT_ADDRESSES.TOKEN_FACTORY;
+  }
+
+  getGraduationHandlerAddress() {
+    return CONTRACT_ADDRESSES.GRADUATION_HANDLER;
+  }
+
+  getBondingCurveAddress() {
+    return CONTRACT_ADDRESSES.BONDING_CURVE;
+  }
+
+  getWldTokenAddress() {
+    return CONTRACT_ADDRESSES.WLD_TOKEN;
+  }
+
   // Remove listeners
   removeAllListeners() {
     // Implementation to remove all event listeners
   }
 }
 
-// Export singleton instance
-export const contractService = new ContractService(
-  new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL || 'https://rpc.worldchain.org')
-);
+// Create a provider instance - use Sepolia testnet for testing
+const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL || 'https://rpc.sepolia.org');
+
+// Export singleton instance (signer will be set when wallet is connected)
+export const contractService = new ContractService(provider);
 
