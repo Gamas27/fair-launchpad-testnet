@@ -48,8 +48,8 @@ export default function Home() {
             </CardHeader>
           </Card>
 
-          {/* Module Navigation */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Module Navigation */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {/* Core Journey Module */}
             <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
               <CardHeader>
@@ -225,10 +225,54 @@ export default function Home() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Navigation Module */}
+          <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-purple-300">
+                <BarChart3 className="h-5 w-5" />
+                Navigation
+              </CardTitle>
+              <CardDescription className="text-gray-300">
+                Futuristic mobile interface
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                  <span>Bottom Navigation</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                  <span>Token Cards</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                  <span>Mini Charts</span>
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <Link href="/navigation-world-app" className="flex-1">
+                  <Button className="w-full">
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    World App
+                  </Button>
+                </Link>
+                <Link href="/navigation-module" className="flex-1">
+                  <Button variant="outline" className="w-full">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Test
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-          {/* Status Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* Status Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
             <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
               <CardHeader>
                 <CardTitle className="text-sm text-purple-300">Core Journey</CardTitle>
@@ -272,15 +316,29 @@ export default function Home() {
             </Card>
 
             <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
-              <CardHeader>
+            <CardHeader>
                 <CardTitle className="text-sm text-purple-300">Trading Interface</CardTitle>
+                <CardDescription className="text-gray-300">v1.0.0</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="text-xs space-y-1 font-mono text-gray-300">
+                  <div>Status: ✅ Ready</div>
+                  <div>World App: ✅ Optimized</div>
+                  <div>Features: Trading + Charts</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
+              <CardHeader>
+                <CardTitle className="text-sm text-purple-300">Navigation</CardTitle>
                 <CardDescription className="text-gray-300">v1.0.0</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-xs space-y-1 font-mono text-gray-300">
                   <div>Status: ✅ Ready</div>
                   <div>World App: ✅ Optimized</div>
-                  <div>Features: Trading + Charts</div>
+                  <div>Features: Mobile + Charts</div>
                 </div>
               </CardContent>
             </Card>

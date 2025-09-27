@@ -55,6 +55,12 @@ export function Navigation({ className }: NavigationProps) {
       href: '/trading-v2-world-app',
       icon: TrendingUp,
       description: 'Trade tokens'
+    },
+    {
+      name: 'Navigation',
+      href: '/navigation-world-app',
+      icon: BarChart3,
+      description: 'Futuristic interface'
     }
   ]
 
