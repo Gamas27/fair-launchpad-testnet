@@ -104,3 +104,4 @@ Switch versions by changing `JOURNEY_VERSION` in environment variables.
 - If redirect doesn't work, check the router implementation
 - If components don't load, verify the module imports
 - If styling is broken, check Tailwind CSS configuration
+
