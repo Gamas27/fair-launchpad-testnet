@@ -30,7 +30,7 @@ export default function Home() {
         </div>
 
         {/* Module Navigation */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Core Journey Module */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
@@ -162,10 +162,54 @@ export default function Home() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Trading Interface Module */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Trading Interface
+              </CardTitle>
+              <CardDescription>
+                Trade tokens with advanced interface
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 rounded-full bg-orange-500" />
+                  <span>Token Trading</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 rounded-full bg-orange-500" />
+                  <span>Price Charts</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 rounded-full bg-orange-500" />
+                  <span>Trade History</span>
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <Link href="/trading-v2-world-app" className="flex-1">
+                  <Button className="w-full">
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    World App
+                  </Button>
+                </Link>
+                <Link href="/trading-v2" className="flex-1">
+                  <Button variant="outline" className="w-full">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Test
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Status Information */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-sm">Core Journey</CardTitle>
@@ -204,6 +248,20 @@ export default function Home() {
                 <div>Status: ✅ Ready</div>
                 <div>World App: ✅ Optimized</div>
                 <div>Features: Launch + Trading</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Trading Interface</CardTitle>
+              <CardDescription>v1.0.0</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs space-y-1 font-mono">
+                <div>Status: ✅ Ready</div>
+                <div>World App: ✅ Optimized</div>
+                <div>Features: Trading + Charts</div>
               </div>
             </CardContent>
           </Card>

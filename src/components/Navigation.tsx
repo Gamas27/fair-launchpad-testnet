@@ -44,8 +44,14 @@ export function Navigation({ className }: NavigationProps) {
       description: 'Create tokens'
     },
     {
+      name: 'Launch Token',
+      href: '/trading-world-app',
+      icon: TrendingUp,
+      description: 'Launch tokens'
+    },
+    {
       name: 'Trading',
-      href: '/trading',
+      href: '/trading-v2-world-app',
       icon: TrendingUp,
       description: 'Trade tokens'
     }
