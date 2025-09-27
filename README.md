@@ -4,8 +4,9 @@
 
 ## 🌐 Live Deployment
 
-- **Public URL**: https://fair-launchpad-world-app.vercel.app
-- **World App Page**: https://fair-launchpad-world-app.vercel.app/world-app
+- **Public URL**: https://fair-launchpad-testnet.vercel.app
+- **World App Page**: https://fair-launchpad-testnet.vercel.app/world-app
+- **Token Module**: https://fair-launchpad-testnet.vercel.app/token-world-app
 - **Status**: ✅ Production Ready
 
 ## 🎯 Core Journey Module
@@ -21,8 +22,10 @@ A simplified, World App-optimized version featuring:
 - ✅ **World ID Integration** - Human verification required
 - ✅ **Privy Wallet Only** - Secure embedded wallets
 - ✅ **Anti-Bot Protection** - Prevents manipulation
+- ✅ **Token Creation** - Full token launch system
+- ✅ **Module Navigation** - Seamless switching
 - ✅ **Mobile Optimized** - Perfect for World App
-- ✅ **Fast Loading** - 113kB bundle size
+- ✅ **Fast Loading** - 115kB bundle size
 - ✅ **Production Ready** - Stable deployment
 
 ## 🛠️ Technical Stack
