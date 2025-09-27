@@ -239,7 +239,7 @@ export function DiscoveryModuleWorldApp() {
   )
 }
 
-export const DiscoveryModuleWorldApp = {
+export const DiscoveryModuleWorldAppExport = {
   version: 'v1.0.0',
   DiscoveryModule: DiscoveryModuleWorldApp
 }

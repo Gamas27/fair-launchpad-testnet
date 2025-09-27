@@ -173,7 +173,7 @@ export function ProfileModuleWorldApp() {
   )
 }
 
-export const ProfileModuleWorldApp = {
+export const ProfileModuleWorldAppExport = {
   version: 'v1.0.0',
   ProfileModule: ProfileModuleWorldApp
 }

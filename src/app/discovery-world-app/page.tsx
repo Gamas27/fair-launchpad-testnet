@@ -1,7 +1,7 @@
 'use client'
 
-import { DiscoveryModuleWorldApp } from '@/modules/discovery-module/world-app'
+import { DiscoveryModuleWorldAppExport } from '@/modules/discovery-module/world-app'
 
 export default function DiscoveryWorldAppPage() {
-  return <DiscoveryModuleWorldApp.DiscoveryModule />
+  return <DiscoveryModuleWorldAppExport.DiscoveryModule />
 }
