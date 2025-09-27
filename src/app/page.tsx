@@ -13,7 +13,9 @@ import {
   ExternalLink,
   Zap,
   CheckCircle,
-  BarChart3
+  BarChart3,
+  Search,
+  Wallet
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -226,49 +228,137 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Navigation Module */}
-          <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-300">
-                <BarChart3 className="h-5 w-5" />
-                Navigation
-              </CardTitle>
-              <CardDescription className="text-gray-300">
-                Futuristic mobile interface
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-gray-300">
-                  <div className="w-3 h-3 rounded-full bg-cyan-500" />
-                  <span>Bottom Navigation</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-300">
-                  <div className="w-3 h-3 rounded-full bg-cyan-500" />
-                  <span>Token Cards</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-300">
-                  <div className="w-3 h-3 rounded-full bg-cyan-500" />
-                  <span>Mini Charts</span>
-                </div>
-              </div>
-              
-              <div className="flex gap-2">
-                <Link href="/navigation-world-app" className="flex-1">
-                  <Button className="w-full">
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    World App
-                  </Button>
-                </Link>
-                <Link href="/navigation-module" className="flex-1">
-                  <Button variant="outline" className="w-full">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Test
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+                  {/* Discovery Module */}
+                  <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-purple-300">
+                        <Search className="h-5 w-5" />
+                        Discovery
+                      </CardTitle>
+                      <CardDescription className="text-gray-300">
+                        Search and discover tokens
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span>Search & Filters</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span>Project Cards</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span>Live Updates</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Link href="/discovery-world-app" className="flex-1">
+                          <Button className="w-full">
+                            <Search className="h-4 w-4 mr-2" />
+                            World App
+                          </Button>
+                        </Link>
+                        <Link href="/discovery-module" className="flex-1">
+                          <Button variant="outline" className="w-full">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Test
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Profile Module */}
+                  <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-purple-300">
+                        <Wallet className="h-5 w-5" />
+                        Profile
+                      </CardTitle>
+                      <CardDescription className="text-gray-300">
+                        User profile and wallet
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span>Balances & Stats</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span>Activity Feed</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span>Quick Actions</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Link href="/profile-world-app" className="flex-1">
+                          <Button className="w-full">
+                            <Wallet className="h-4 w-4 mr-2" />
+                            World App
+                          </Button>
+                        </Link>
+                        <Link href="/profile-module" className="flex-1">
+                          <Button variant="outline" className="w-full">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Test
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Navigation Module */}
+                  <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20 hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-purple-300">
+                        <BarChart3 className="h-5 w-5" />
+                        Navigation
+                      </CardTitle>
+                      <CardDescription className="text-gray-300">
+                        Futuristic mobile interface
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span>Bottom Navigation</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span>Token Cards</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span>Mini Charts</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Link href="/navigation-world-app" className="flex-1">
+                          <Button className="w-full">
+                            <BarChart3 className="h-4 w-4 mr-2" />
+                            World App
+                          </Button>
+                        </Link>
+                        <Link href="/navigation-module" className="flex-1">
+                          <Button variant="outline" className="w-full">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Test
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
         </div>
 
         {/* Status Information */}
@@ -325,6 +415,34 @@ export default function Home() {
                   <div>Status: ✅ Ready</div>
                   <div>World App: ✅ Optimized</div>
                   <div>Features: Trading + Charts</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
+              <CardHeader>
+                <CardTitle className="text-sm text-purple-300">Discovery</CardTitle>
+                <CardDescription className="text-gray-300">v1.0.0</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs space-y-1 font-mono text-gray-300">
+                  <div>Status: ✅ Ready</div>
+                  <div>World App: ✅ Optimized</div>
+                  <div>Features: Search + Filters</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/20">
+              <CardHeader>
+                <CardTitle className="text-sm text-purple-300">Profile</CardTitle>
+                <CardDescription className="text-gray-300">v1.0.0</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs space-y-1 font-mono text-gray-300">
+                  <div>Status: ✅ Ready</div>
+                  <div>World App: ✅ Optimized</div>
+                  <div>Features: Wallet + Stats</div>
                 </div>
               </CardContent>
             </Card>
