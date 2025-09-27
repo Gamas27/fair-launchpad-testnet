@@ -367,12 +367,12 @@ export const WorldAppJourneyPage = () => {
                 Journey Complete!
               </CardTitle>
               <CardDescription>
-                You're ready to launch tokens in the Fair Launchpad
+                        You&apos;re ready to launch tokens in the Fair Launchpad
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="bg-green-50 border border-green-200 rounded-md p-4">
-                <h3 className="font-medium text-green-800 mb-2">What's Next?</h3>
+                <h3 className="font-medium text-green-800 mb-2">What&apos;s Next?</h3>
                 <ul className="space-y-1 text-sm text-green-700">
                   <li>✅ World ID verification completed</li>
                   <li>✅ Secure wallet created</li>
