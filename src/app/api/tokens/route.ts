@@ -108,6 +108,11 @@ export const POST = withOptionalAuth(async (user, request: NextRequest) => {
       initialPrice: parseFloat(body.initialPrice),
       priceIncrement: parseFloat(body.priceIncrement),
       maxSupply: BigInt(body.maxSupply),
+      currentPrice: parseFloat(body.initialPrice), // Set current price to initial price
+      totalVolume: 0,
+      totalTrades: 0,
+      marketCap: 0,
+      status: 'active'
     }
     
     // Check if token already exists

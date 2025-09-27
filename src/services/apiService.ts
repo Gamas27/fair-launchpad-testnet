@@ -121,12 +121,25 @@ class ApiService {
     }
     
     const queryString = searchParams.toString()
-    return this.request<{
-      items: Token[]
-      total: number
-      limit: number
-      offset: number
+    const response = await this.request<{
+      data: Token[]
+      pagination: {
+        total: number
+        limit: number
+        offset: number
+        hasMore: boolean
+        totalPages: number
+        currentPage: number
+      }
     }>(`/tokens${queryString ? `?${queryString}` : ''}`)
+    
+    // Transform the response to match the expected format
+    return {
+      items: response.data || [],
+      total: response.pagination?.total || 0,
+      limit: response.pagination?.limit || 20,
+      offset: response.pagination?.offset || 0
+    }
   }
 
   async getToken(address: string) {
