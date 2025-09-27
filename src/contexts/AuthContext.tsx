@@ -16,15 +16,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { isConnected: privyConnected, address: privyAddress } = usePrivyWallet()
-  const { isVerified: worldIdVerified } = useSafeWorldId()
+  const { isVerified: worldIdVerified, verificationLevel } = useSafeWorldId()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   // Development mode: Override authentication state
   const isDevelopment = process.env.NODE_ENV === 'development'
-  const isConnected = isDevelopment ? true : privyConnected
-  const isVerified = isDevelopment ? true : worldIdVerified
-  const address = isDevelopment ? '0x1234567890123456789012345678901234567890' : privyAddress
+  
+  // Enforce World ID verification requirement for wallet operations
+  const isWorldIdVerified = isDevelopment ? true : worldIdVerified
+  const isConnected = isDevelopment ? true : (privyConnected && isWorldIdVerified)
+  const isVerified = isWorldIdVerified
+  const address = isDevelopment ? '0x1234567890123456789012345678901234567890' : (isConnected ? privyAddress : null)
 
   useEffect(() => {
     setIsLoading(false)

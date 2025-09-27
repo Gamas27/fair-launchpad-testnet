@@ -83,6 +83,13 @@ export function TokenLaunchForm() {
       return
     }
 
+    // Check if wallet is a Privy abstracted wallet
+    const activeWallet = wallets.find(wallet => wallet.address === address)
+    if (!activeWallet || activeWallet.walletClientType !== 'privy') {
+      alert('Only Privy abstracted wallets can launch tokens. Please use the guided wallet creation process.')
+      return
+    }
+
     const validationError = validateForm()
     if (validationError) {
       alert(validationError)

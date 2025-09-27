@@ -38,9 +38,9 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
         },
         // Configure login methods
         loginMethods: ['email', 'wallet', 'google', 'twitter', 'discord'],
-        // Configure embedded wallets
+        // Configure embedded wallets - only create after World ID verification
         embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
+          createOnLogin: 'never', // We'll create wallets manually after World ID verification
           noPromptOnSignature: false,
         },
         // Configure external wallets
