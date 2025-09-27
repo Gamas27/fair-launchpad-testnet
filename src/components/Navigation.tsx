@@ -1,99 +1,150 @@
-import React from 'react'
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { 
-  Home, 
-  Rocket, 
+  Shield, 
+  Coins, 
   TrendingUp,
-  Shield,
-  User,
-  TestTube,
-  BarChart3,
-  Lock,
-  AlertCircle
+  Menu,
+  X,
+  Home,
+  Zap
 } from 'lucide-react'
-import { useNavigation } from '@/contexts/NavigationContext'
-import { MAIN_ROUTES, SECONDARY_ROUTES, UTILITY_ROUTES } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
-// Icon mapping for dynamic icon rendering
-const iconMap = {
-  Home,
-  Rocket,
-  TrendingUp,
-  User,
-  BarChart3,
-  TestTube
+interface NavigationProps {
+  className?: string
 }
 
-export function Navigation() {
-  const { 
-    currentRoute, 
-    activeTab, 
-    navigateTo, 
-    isRouteAccessible, 
-    getAccessibleRoutes,
-    isMobile 
-  } = useNavigation()
+export function Navigation({ className }: NavigationProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
 
-  const renderNavButton = (route: any, variant: 'default' | 'ghost' | 'outline' = 'ghost') => {
-    const Icon = iconMap[route.icon as keyof typeof iconMap] || Home
-    const isActive = activeTab === route.id
-    const isAccessible = isRouteAccessible(route)
-    
-    return (
-      <Button
-        key={route.id}
-        variant={isActive ? 'default' : variant}
-        size="sm"
-        onClick={() => navigateTo(route)}
-        disabled={!isAccessible}
-        className={cn(
-          "flex items-center gap-1 px-2 py-1 text-xs transition-all",
-          !isAccessible && "opacity-50 cursor-not-allowed",
-          isActive && "bg-primary text-primary-foreground"
-        )}
-        title={!isAccessible ? `${route.label} requires authentication` : route.description}
-      >
-        <Icon className="h-3 w-3" />
-        <span className="hidden sm:inline">{route.label}</span>
-        {!isAccessible && (
-          <Lock className="h-2 w-2 ml-1" />
-        )}
-      </Button>
-    )
+  const navigationItems = [
+    {
+      name: 'Home',
+      href: '/',
+      icon: Home,
+      description: 'Main dashboard'
+    },
+    {
+      name: 'Core Journey',
+      href: '/world-app',
+      icon: Shield,
+      description: 'World ID + Wallet'
+    },
+    {
+      name: 'Token Creation',
+      href: '/token-world-app',
+      icon: Coins,
+      description: 'Create tokens'
+    },
+    {
+      name: 'Trading',
+      href: '/trading',
+      icon: TrendingUp,
+      description: 'Trade tokens'
+    }
+  ]
+
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/'
+    }
+    return pathname.startsWith(href)
   }
 
   return (
-    <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-14">
+    <nav className={cn("bg-white shadow-sm border-b", className)}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <Shield className="h-6 w-6 text-primary" />
-            <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-cyan-400 bg-clip-text text-transparent">
-              FairLaunch
-            </h1>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <Zap className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Fair Launchpad</h1>
+                <p className="text-xs text-gray-500">Anti-bot meme coin launchpad</p>
+              </div>
+            </div>
+            <Badge variant="outline" className="text-xs">
+              v1.0.0
+            </Badge>
           </div>
-          
-          {/* Navigation */}
-          <div className="flex items-center gap-1">
-            {/* Main Routes */}
-            {MAIN_ROUTES.map(route => renderNavButton(route))}
-            
-            {/* Secondary Routes */}
-            {SECONDARY_ROUTES.map(route => renderNavButton(route, 'outline'))}
-            
-            {/* Utility Routes */}
-            {UTILITY_ROUTES.map(route => renderNavButton(route, 'outline'))}
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-1">
+            {navigationItems.map((item) => {
+              const Icon = item.icon
+              return (
+                <Link key={item.href} href={item.href}>
+                  <Button
+                    variant={isActive(item.href) ? 'default' : 'ghost'}
+                    size="sm"
+                    className={cn(
+                      "flex items-center gap-2 transition-colors",
+                      isActive(item.href) 
+                        ? "bg-blue-600 text-white" 
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.name}
+                  </Button>
+                </Link>
+              )
+            })}
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </Button>
           </div>
         </div>
-        
-        {/* Mobile Navigation Indicator */}
-        {isMobile && (
-          <div className="flex items-center justify-center py-2 border-t border-border/50">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <AlertCircle className="h-3 w-3" />
-              <span>Mobile optimized navigation</span>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              {navigationItems.map((item) => {
+                const Icon = item.icon
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant={isActive(item.href) ? 'default' : 'ghost'}
+                      className={cn(
+                        "w-full justify-start flex items-center gap-3 p-3",
+                        isActive(item.href) 
+                          ? "bg-blue-600 text-white" 
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      )}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <div className="text-left">
+                        <div className="font-medium">{item.name}</div>
+                        <div className="text-xs opacity-75">{item.description}</div>
+                      </div>
+                    </Button>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         )}
