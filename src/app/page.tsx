@@ -7,9 +7,11 @@ import {
   Shield, 
   Coins, 
   Rocket, 
+  TrendingUp,
   ArrowRight,
   ExternalLink,
-  Zap
+  Zap,
+  CheckCircle
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -28,16 +30,16 @@ export default function Home() {
         </div>
 
         {/* Module Navigation */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Core Journey Module */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Core Journey Module
+                Core Journey
               </CardTitle>
               <CardDescription>
-                World ID verification and wallet creation flow
+                World ID verification and wallet creation
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -73,15 +75,15 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Token Module */}
+          {/* Token Creation Module */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Coins className="h-5 w-5" />
-                Token Module
+                Token Creation
               </CardTitle>
               <CardDescription>
-                Create and launch tokens with anti-bot protection
+                Create and launch tokens
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -116,10 +118,54 @@ export default function Home() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Trading Module */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Launch Token
+              </CardTitle>
+              <CardDescription>
+                Launch tokens with anti-bot protection
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <span>Token Launch</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <span>Anti-Bot Protection</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <span>Bonding Curve</span>
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <Link href="/trading-world-app" className="flex-1">
+                  <Button className="w-full">
+                    <Rocket className="h-4 w-4 mr-2" />
+                    World App
+                  </Button>
+                </Link>
+                <Link href="/trading" className="flex-1">
+                  <Button variant="outline" className="w-full">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Test
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Status Information */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-sm">Core Journey</CardTitle>
@@ -136,7 +182,7 @@ export default function Home() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Token Module</CardTitle>
+              <CardTitle className="text-sm">Token Creation</CardTitle>
               <CardDescription>v1.0.0</CardDescription>
             </CardHeader>
             <CardContent>
@@ -144,6 +190,20 @@ export default function Home() {
                 <div>Status: ✅ Ready</div>
                 <div>World App: ✅ Optimized</div>
                 <div>Features: Creation + Launch</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Launch Token</CardTitle>
+              <CardDescription>v1.0.0</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs space-y-1 font-mono">
+                <div>Status: ✅ Ready</div>
+                <div>World App: ✅ Optimized</div>
+                <div>Features: Launch + Trading</div>
               </div>
             </CardContent>
           </Card>
@@ -174,10 +234,10 @@ export default function Home() {
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
-            <Link href="/token-world-app">
-              <Button size="lg" variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50">
-                <Coins className="h-5 w-5 mr-2" />
-                Create Token
+            <Link href="/trading-world-app">
+              <Button size="lg" variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                <Rocket className="h-5 w-5 mr-2" />
+                Launch Token
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
