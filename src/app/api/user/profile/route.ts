@@ -1,65 +1,58 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// Mock user data
-const mockUser = {
-  id: 'user_123',
-  username: '@CryptoTrader',
-  displayName: 'Crypto Trader',
-  bio: 'Passionate about DeFi and token launches',
-  avatar: '🚀',
-  verified: true,
-  repScore: 1250,
-  joinDate: '2024-01-15',
-  walletAddress: '0xMockPrivyWallet1234567890',
-  stats: {
-    tokensCreated: 15,
-    tokensGraduated: 8,
-    followers: 2500,
-    following: 150,
-    totalVolume: 125000,
-    totalTrades: 450,
-  },
-  preferences: {
-    theme: 'dark',
-    language: 'en',
-    currency: 'SOL',
-    notifications: {
-      push: true,
-      email: true,
-      trading: true,
-      social: true,
-    },
-    privacy: {
-      profilePublic: true,
-      showRep: true,
-      showHoldings: true,
-    },
-  },
-  security: {
-    twoFactor: false,
-    biometric: true,
-    sessionTimeout: 30,
-    autoLock: true,
-  },
-  wallet: {
-    primary: '0xMockPrivyWallet1234567890',
-    autoConnect: true,
-    gasOptimization: true,
-    slippageTolerance: 0.5,
-  },
-}
+import { prisma } from '@/lib/config/database'
+import { SecurityManager } from '@/lib/utils/security'
+import { ErrorHandler } from '@/lib/utils/performance'
 
 export async function GET(request: NextRequest) {
   try {
-    // In production, this would fetch from database
+    const { searchParams } = new URL(request.url)
+    const userId = searchParams.get('userId')
+
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, error: 'User ID is required' },
+        { status: 400 }
+      )
+    }
+
+    // Rate limiting
+    const identifier = request.ip || 'unknown'
+    if (!SecurityManager.checkRateLimit(identifier, 20, 60000)) { // 20 requests per minute
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded' },
+        { status: 429 }
+      )
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        tokens: true,
+        trades: true,
+        reputationHistory: {
+          orderBy: { timestamp: 'desc' },
+          take: 10,
+        },
+      }
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: 'User not found' },
+        { status: 404 }
+      )
+    }
+
     return NextResponse.json({
       success: true,
-      data: mockUser
+      data: user,
+      message: 'User profile fetched successfully',
     })
+
   } catch (error) {
-    console.error('Profile fetch error:', error)
+    ErrorHandler.logError(error as Error, 'user profile fetch')
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch profile' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }
@@ -68,23 +61,55 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
-    
-    // In production, this would update the database
-    const updatedUser = {
-      ...mockUser,
-      ...body,
-      updatedAt: new Date().toISOString(),
+    const { userId, ...updateData } = body
+
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, error: 'User ID is required' },
+        { status: 400 }
+      )
     }
+
+    // Rate limiting
+    const identifier = request.ip || 'unknown'
+    if (!SecurityManager.checkRateLimit(identifier, 10, 60000)) { // 10 updates per minute
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded' },
+        { status: 429 }
+      )
+    }
+
+    // Validate wallet address if provided
+    if (updateData.walletAddress && !SecurityManager.validateWalletAddress(updateData.walletAddress)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid wallet address format' },
+        { status: 400 }
+      )
+    }
+
+    // Sanitize text inputs
+    if (updateData.description) {
+      updateData.description = SecurityManager.sanitizeInput(updateData.description)
+    }
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...updateData,
+        updatedAt: new Date(),
+      }
+    })
 
     return NextResponse.json({
       success: true,
-      data: updatedUser,
-      message: 'Profile updated successfully'
+      data: user,
+      message: 'User profile updated successfully',
     })
+
   } catch (error) {
-    console.error('Profile update error:', error)
+    ErrorHandler.logError(error as Error, 'user profile update')
     return NextResponse.json(
-      { success: false, error: 'Failed to update profile' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }

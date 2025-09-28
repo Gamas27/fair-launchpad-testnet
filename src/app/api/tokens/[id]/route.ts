@@ -1,55 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// Mock token data
-const mockToken = {
-  id: '1',
-  name: 'MemeCoin',
-  symbol: 'MEME',
-  description: 'MemeCoin is the next generation of community-driven digital assets, designed for rapid growth and fair distribution. Built on the principles of decentralization and transparency, MemeCoin aims to empower its holders through innovative tokenomics and a vibrant ecosystem.',
-  logo: '🔥',
-  website: 'https://memecoin.com',
-  twitter: '@memecoin',
-  telegram: 't.me/memecoin',
-  marketCap: 1200000,
-  price: 0.000001,
-  totalSupply: 1000000000,
-  liquidity: 850000,
-  creator: '0xMockCreator123',
-  createdAt: '2024-01-15T10:30:00Z',
-  isLive: true,
-  repRequired: 50,
-  stats: {
-    holders: 1250,
-    transactions: 12500,
-    volume24h: 250000,
-    priceChange24h: 15.5,
-    ath: 1500000,
-    atl: 800000,
-  },
-  social: {
-    x: 'https://x.com/memecoin',
-    telegram: 'https://t.me/memecoin',
-    discord: 'https://discord.gg/memecoin',
-  },
-  gradu8Story: 'Born from the depths of the internet, MemeCoin quickly gained traction among early adopters. Its unique bonding curve mechanism ensured a fair launch, preventing large whale manipulation. As it hit its initial market cap targets, the community rallied, pushing it towards its first graduation ceremony.',
-  teamInfo: 'The MemeCoin project is supported by a decentralized team of blockchain enthusiasts, developers, and community managers. Our core contributors are anonymous to maintain the decentralized ethos, but regularly engage with the community through various channels.',
-  repBreakdown: {
-    verified: 85,
-    anon: 10,
-    flagged: 5,
-  },
-  recentActivity: [
-    { id: 'tx1', type: 'buy', user: '0xabc...123', amount: '100 SOL', tokenAmount: '10,000 MEME', time: '2m ago' },
-    { id: 'tx2', type: 'sell', user: '0xdef...456', amount: '50 SOL', tokenAmount: '5,000 MEME', time: '5m ago' },
-    { id: 'tx3', type: 'buy', user: '0xghi...789', amount: '200 SOL', tokenAmount: '20,000 MEME', time: '10m ago' },
-  ],
-  priceHistory: [
-    { time: '1h', price: 0.0001 },
-    { time: '30m', price: 0.00012 },
-    { time: '15m', price: 0.00011 },
-    { time: 'now', price: 0.00013 },
-  ],
-}
+import { prisma } from '@/lib/config/database'
+import { SecurityManager } from '@/lib/utils/security'
+import { ErrorHandler } from '@/lib/utils/performance'
 
 export async function GET(
   request: NextRequest,
@@ -58,22 +10,59 @@ export async function GET(
   try {
     const { id } = await params
 
-    // In production, this would fetch from database
-    if (id === '1') {
-      return NextResponse.json({
-        success: true,
-        data: mockToken
-      })
+    // Rate limiting
+    const identifier = request.ip || 'unknown'
+    if (!SecurityManager.checkRateLimit(identifier, 20, 60000)) { // 20 requests per minute
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded' },
+        { status: 429 }
+      )
     }
 
-    return NextResponse.json(
-      { success: false, error: 'Token not found' },
-      { status: 404 }
-    )
+    const token = await prisma.token.findUnique({
+      where: { id },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            walletAddress: true,
+            reputationLevel: true,
+            isWorldIdVerified: true,
+          }
+        },
+        trades: {
+          orderBy: { timestamp: 'desc' },
+          take: 10,
+          include: {
+            user: {
+              select: {
+                id: true,
+                walletAddress: true,
+                reputationLevel: true,
+              }
+            }
+          }
+        }
+      }
+    })
+
+    if (!token) {
+      return NextResponse.json(
+        { success: false, error: 'Token not found' },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: token,
+      message: 'Token fetched successfully',
+    })
+
   } catch (error) {
-    console.error('Token fetch error:', error)
+    ErrorHandler.logError(error as Error, 'token fetch')
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch token' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }
@@ -87,22 +76,49 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
 
-    // In production, this would update the database
-    const updatedToken = {
-      ...mockToken,
-      ...body,
-      updatedAt: new Date().toISOString(),
+    // Rate limiting
+    const identifier = request.ip || 'unknown'
+    if (!SecurityManager.checkRateLimit(identifier, 10, 60000)) { // 10 updates per minute
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded' },
+        { status: 429 }
+      )
     }
+
+    // Sanitize inputs
+    const sanitizedData = { ...body }
+    if (sanitizedData.name) sanitizedData.name = SecurityManager.sanitizeInput(sanitizedData.name)
+    if (sanitizedData.description) sanitizedData.description = SecurityManager.sanitizeInput(sanitizedData.description)
+    if (sanitizedData.teamInfo) sanitizedData.teamInfo = SecurityManager.sanitizeInput(sanitizedData.teamInfo)
+
+    const token = await prisma.token.update({
+      where: { id },
+      data: {
+        ...sanitizedData,
+        updatedAt: new Date(),
+      },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            walletAddress: true,
+            reputationLevel: true,
+            isWorldIdVerified: true,
+          }
+        }
+      }
+    })
 
     return NextResponse.json({
       success: true,
-      data: updatedToken,
-      message: 'Token updated successfully'
+      data: token,
+      message: 'Token updated successfully',
     })
+
   } catch (error) {
-    console.error('Token update error:', error)
+    ErrorHandler.logError(error as Error, 'token update')
     return NextResponse.json(
-      { success: false, error: 'Failed to update token' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }
@@ -115,17 +131,42 @@ export async function DELETE(
   try {
     const { id } = await params
 
-    // In production, this would delete from database
-    console.log('Deleting token:', id)
+    // Rate limiting
+    const identifier = request.ip || 'unknown'
+    if (!SecurityManager.checkRateLimit(identifier, 5, 60000)) { // 5 deletions per minute
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded' },
+        { status: 429 }
+      )
+    }
+
+    // Check if token exists and get creator info
+    const token = await prisma.token.findUnique({
+      where: { id },
+      select: { creatorId: true }
+    })
+
+    if (!token) {
+      return NextResponse.json(
+        { success: false, error: 'Token not found' },
+        { status: 404 }
+      )
+    }
+
+    // Delete token (cascade will handle related records)
+    await prisma.token.delete({
+      where: { id }
+    })
 
     return NextResponse.json({
       success: true,
-      message: 'Token deleted successfully'
+      message: `Token ${id} deleted successfully`,
     })
+
   } catch (error) {
-    console.error('Token deletion error:', error)
+    ErrorHandler.logError(error as Error, 'token deletion')
     return NextResponse.json(
-      { success: false, error: 'Failed to delete token' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }

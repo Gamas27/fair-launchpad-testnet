@@ -1,171 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
 model User {
-  walletAddress        String                @id @unique
-  worldIdHash          String?               @unique
-  verificationLevel    String                @default("device")
-  reputationScore      Int                   @default(0)
-  reputationLevel      String                @default("Newcomer")
-  totalTrades          Int                   @default(0)
-  totalVolume          Float                 @default(0)
-  lastActivity         DateTime              @default(now())
-  isBanned             Boolean               @default(false)
-  riskScore            Float                 @default(0)
-  allocationCap        Float                 @default(100)
-  usedAllocation       Float                 @default(0)
+  id                    String   @id @default(cuid())
+  walletAddress         String   @unique
+  worldIdHash          String?  @unique
+  verificationLevel    String   @default("unverified")
+  reputationScore      Int      @default(0)
+  reputationLevel      String   @default("newbie")
+  totalTrades          Int      @default(0)
+  totalVolume          Float    @default(0)
+  lastActivity         DateTime @default(now())
+  isBanned             Boolean  @default(false)
+  riskScore            Int      @default(0)
+  allocationCap        Float    @default(1000)
+  usedAllocation       Float    @default(0)
   marketCap            Float?
-  // Wallet creation tracking for user journey compliance
-  walletCreationMethod String                @default("privy") // "privy", "external"
-  isWorldIdVerified    Boolean               @default(false)
+  walletCreationMethod String   @default("privy")
+  isWorldIdVerified    Boolean  @default(false)
   walletCreatedAt      DateTime?
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  antiManipulationLogs AntiManipulationLog[]
-  createdTokens        Token[]               @relation("TokenCreator")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Relations
+  tokens               Token[]
   trades               Trade[]
-  achievements         UserAchievement[]
-  reputationQuests     UserReputationQuest[]
+  chatMessages         ChatMessage[]
+  chatRooms            ChatRoom[]
+  reputationHistory    ReputationHistory[]
 
   @@map("users")
 }
 
 model Token {
-  address        String   @id @unique
-  name           String
-  symbol         String   @unique
-  description    String
-  imageUrl       String?
-  creatorAddress String
-  initialPrice   Float
-  priceIncrement Float
-  maxSupply      BigInt
-  currentSupply  BigInt   @default(0)
-  currentPrice   Float
-  totalVolume    Float    @default(0)
-  totalTrades    Int      @default(0)
-  marketCap      Float    @default(0)
-  status         String   @default("launching")
-  launchDate     DateTime @default(now())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  creator        User     @relation("TokenCreator", fields: [creatorAddress], references: [walletAddress])
-  trades         Trade[]
+  id              String   @id @default(cuid())
+  name            String
+  ticker          String   @unique
+  logo            String?
+  description     String?
+  marketCap       Float    @default(0)
+  ath             Float    @default(0)
+  volume          Float    @default(0)
+  txCount         Int      @default(0)
+  isLive          Boolean  @default(false)
+  timeSinceLaunch String?
+  chartData       String?
+  socialLinks     String?
+  teamInfo        String?
+  gradu8Story     String?
+  repBreakdown    String?
+  priceHistory    String?
+  recentActivity  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  creator         User     @relation(fields: [creatorId], references: [id])
+  creatorId       String
+  trades          Trade[]
 
   @@map("tokens")
 }
 
 model Trade {
-  id                String   @id @default(cuid())
-  userAddress       String
-  tokenAddress      String
-  type              String
-  amount            Float
-  price             Float
-  totalValue        Float
-  blockNumber       BigInt?
-  transactionHash   String?
-  riskScore         Float    @default(0)
-  isSuspicious      Boolean  @default(false)
-  manipulationFlags String?
-  createdAt         DateTime @default(now())
-  token             Token    @relation(fields: [tokenAddress], references: [address])
-  user              User     @relation(fields: [userAddress], references: [walletAddress])
+  id          String   @id @default(cuid())
+  tokenId     String
+  userId      String
+  type        String   // 'buy' or 'sell'
+  amount      Float
+  tokenAmount Float
+  price       Float
+  timestamp   DateTime @default(now())
+
+  // Relations
+  token       Token    @relation(fields: [tokenId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
 
   @@map("trades")
 }
 
-model ReputationQuest {
-  id           String                @id @default(cuid())
-  title        String
-  description  String
-  type         String
-  targetValue  Float
-  reward       Int
-  isActive     Boolean               @default(true)
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
-  userProgress UserReputationQuest[]
+model ChatRoom {
+  id              String   @id @default(cuid())
+  name            String
+  type            String   // 'public', 'private', 'dm', 'coin', 'group'
+  description     String?
+  repRequirement  Int?
+  isLocked        Boolean  @default(false)
+  membersCount    Int      @default(0)
+  onlineCount     Int      @default(0)
+  avatar          String?
+  lastMessage     String?
+  lastMessageTime DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  @@map("reputation_quests")
+  // Relations
+  creator         User     @relation(fields: [creatorId], references: [id])
+  creatorId       String
+  messages        ChatMessage[]
+
+  @@map("chat_rooms")
 }
 
-model UserReputationQuest {
-  id          String          @id @default(cuid())
-  userAddress String
-  questId     String
-  progress    Float           @default(0)
-  isCompleted Boolean         @default(false)
-  completedAt DateTime?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  quest       ReputationQuest @relation(fields: [questId], references: [id])
-  user        User            @relation(fields: [userAddress], references: [walletAddress])
+model ChatMessage {
+  id                String   @id @default(cuid())
+  roomId            String
+  senderId          String
+  message           String
+  type              String   @default("text") // 'text', 'image', 'emoji'
+  attachments       String?
+  timestamp         DateTime @default(now())
 
-  @@unique([userAddress, questId])
-  @@map("user_reputation_quests")
+  // Relations
+  room              ChatRoom @relation(fields: [roomId], references: [id])
+  sender            User     @relation(fields: [senderId], references: [id])
+
+  @@map("chat_messages")
 }
 
-model Achievement {
-  id               String            @id @default(cuid())
-  title            String
-  description      String
-  icon             String
-  rarity           String
-  requirements     String
-  reward           Int
-  isActive         Boolean           @default(true)
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  userAchievements UserAchievement[]
+model ReputationHistory {
+  id          String   @id @default(cuid())
+  userId      String
+  change      Int
+  reason      String
+  timestamp   DateTime @default(now())
 
-  @@map("achievements")
-}
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
 
-model UserAchievement {
-  id            String      @id @default(cuid())
-  userAddress   String
-  achievementId String
-  unlockedAt    DateTime    @default(now())
-  achievement   Achievement @relation(fields: [achievementId], references: [id])
-  user          User        @relation(fields: [userAddress], references: [walletAddress])
-
-  @@unique([userAddress, achievementId])
-  @@map("user_achievements")
-}
-
-model AntiManipulationLog {
-  id           String    @id @default(cuid())
-  userAddress  String
-  activityType String
-  riskScore    Float
-  flags        String
-  details      String?
-  isResolved   Boolean   @default(false)
-  resolvedAt   DateTime?
-  resolvedBy   String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  user         User      @relation(fields: [userAddress], references: [walletAddress])
-
-  @@map("anti_manipulation_logs")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  userAddress  String
-  sessionToken String   @unique
-  expiresAt    DateTime
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@map("sessions")
+  @@map("reputation_history")
 }

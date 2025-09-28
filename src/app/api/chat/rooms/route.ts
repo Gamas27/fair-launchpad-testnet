@@ -1,102 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// Mock chat rooms data
-const mockChatRooms = [
-  {
-    id: 1,
-    type: 'group',
-    name: 'ARC Community',
-    icon: '🎮',
-    description: 'Official ARC token community chat',
-    lastMessage: 'The new game update is amazing!',
-    timestamp: '2m ago',
-    unread: 3,
-    repRequired: 50,
-    members: 1250,
-    isOnline: true,
-    isPrivate: false,
-    tags: ['gaming', 'arc', 'community'],
-  },
-  {
-    id: 2,
-    type: 'dm',
-    name: '@GameFiGuru',
-    icon: '👨‍💻',
-    description: 'Direct message with GameFiGuru',
-    lastMessage: 'Thanks for the tip about ARC!',
-    timestamp: '5m ago',
-    unread: 1,
-    repRequired: 0,
-    members: 1,
-    isOnline: true,
-    isPrivate: true,
-    tags: ['dm', 'gaming'],
-  },
-  {
-    id: 3,
-    type: 'group',
-    name: 'GRT Traders',
-    icon: '🎯',
-    description: 'GRT trading discussion group',
-    lastMessage: 'Price is looking good today',
-    timestamp: '10m ago',
-    unread: 0,
-    repRequired: 100,
-    members: 890,
-    isOnline: false,
-    isPrivate: false,
-    tags: ['trading', 'grt', 'analysis'],
-  },
-  {
-    id: 4,
-    type: 'coin',
-    name: 'ARC Token Chat',
-    icon: '🎮',
-    description: 'ARC token official chat room',
-    lastMessage: 'New holder joined the community!',
-    timestamp: '15m ago',
-    unread: 0,
-    repRequired: 25,
-    members: 450,
-    isOnline: true,
-    isPrivate: false,
-    tags: ['coin', 'arc', 'official'],
-  },
-]
+import { prisma } from '@/lib/config/database'
+import { SecurityManager } from '@/lib/utils/security'
+import { ErrorHandler } from '@/lib/utils/performance'
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const type = searchParams.get('type') || 'all'
-    const search = searchParams.get('search') || ''
-    const repMin = parseInt(searchParams.get('repMin') || '0')
+    const type = searchParams.get('type') || 'public'
+    const repRequirement = searchParams.get('repRequirement') ? parseInt(searchParams.get('repRequirement')!) : undefined
 
-    let filteredRooms = mockChatRooms
-
-    // Filter by type
-    if (type !== 'all') {
-      filteredRooms = filteredRooms.filter(room => room.type === type)
-    }
-
-    // Filter by search
-    if (search) {
-      filteredRooms = filteredRooms.filter(room =>
-        room.name.toLowerCase().includes(search.toLowerCase()) ||
-        room.description.toLowerCase().includes(search.toLowerCase())
+    // Rate limiting
+    const identifier = request.ip || 'unknown'
+    if (!SecurityManager.checkRateLimit(identifier, 20, 60000)) { // 20 requests per minute
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded' },
+        { status: 429 }
       )
     }
 
-    // Filter by REP requirement
-    filteredRooms = filteredRooms.filter(room => room.repRequired <= repMin)
+    // Build where clause
+    const where: any = { type }
+    if (repRequirement !== undefined) {
+      where.repRequirement = { lte: repRequirement }
+    }
+
+    const rooms = await prisma.chatRoom.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            walletAddress: true,
+            reputationLevel: true,
+          }
+        },
+        _count: {
+          select: { messages: true }
+        }
+      }
+    })
 
     return NextResponse.json({
       success: true,
-      data: filteredRooms
+      data: rooms,
+      message: 'Chat rooms fetched successfully',
     })
+
   } catch (error) {
-    console.error('Chat rooms fetch error:', error)
+    ErrorHandler.logError(error as Error, 'chat rooms fetch')
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch chat rooms' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }
@@ -105,53 +59,62 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const {
-      name,
-      description,
-      type,
-      repRequired,
-      isPrivate,
-      tags,
-    } = body
+    const { name, type, description, repRequirement, creatorId } = body
 
     // Validate required fields
-    if (!name || !type) {
+    if (!name || !type || !creatorId) {
       return NextResponse.json(
         { success: false, error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    // Mock room creation
-    const newRoom = {
-      id: Date.now(),
-      name,
-      description: description || '',
-      type,
-      icon: '💬', // Default icon
-      lastMessage: '',
-      timestamp: 'now',
-      unread: 0,
-      repRequired: repRequired || 0,
-      members: 1,
-      isOnline: true,
-      isPrivate: isPrivate || false,
-      tags: tags || [],
-      createdAt: new Date().toISOString(),
+    // Rate limiting
+    const identifier = request.ip || 'unknown'
+    if (!SecurityManager.checkRateLimit(identifier, 5, 60000)) { // 5 creations per minute
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded' },
+        { status: 429 }
+      )
     }
 
-    // In production, this would save to database
-    console.log('Creating chat room:', newRoom)
+    // Sanitize inputs
+    const sanitizedData = {
+      name: SecurityManager.sanitizeInput(name),
+      type: SecurityManager.sanitizeInput(type),
+      description: description ? SecurityManager.sanitizeInput(description) : null,
+      repRequirement: repRequirement || null,
+    }
+
+    // Create chat room
+    const room = await prisma.chatRoom.create({
+      data: {
+        ...sanitizedData,
+        creatorId,
+        membersCount: 1, // Creator is the first member
+        onlineCount: 0,
+      },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            walletAddress: true,
+            reputationLevel: true,
+          }
+        }
+      }
+    })
 
     return NextResponse.json({
       success: true,
-      data: newRoom,
-      message: 'Chat room created successfully'
+      data: room,
+      message: 'Chat room created successfully',
     })
+
   } catch (error) {
-    console.error('Chat room creation error:', error)
+    ErrorHandler.logError(error as Error, 'chat room creation')
     return NextResponse.json(
-      { success: false, error: 'Failed to create chat room' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }
