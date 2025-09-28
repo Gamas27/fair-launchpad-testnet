@@ -2,7 +2,16 @@
   "version": 2,
   "env": {
     "NODE_ENV": "production",
-    "NEXT_PUBLIC_ENVIRONMENT": "testnet"
+    "NEXT_PUBLIC_ENVIRONMENT": "testnet",
+    "DATABASE_URL": "file:./dev.db",
+    "NEXTAUTH_SECRET": "fair-launchpad-test-secret-key-2024",
+    "NEXT_PUBLIC_WORLD_ID_API_KEY": "test-world-id-api-key",
+    "WORLD_ID_APP_ID": "test-world-id-app-id",
+    "NEXT_PUBLIC_PRIVY_APP_ID": "test-privy-app-id",
+    "NEXT_PUBLIC_PRIVY_APP_SECRET": "test-privy-app-secret",
+    "NEXT_PUBLIC_TEST_MODE": "true",
+    "NEXT_PUBLIC_MOCK_WORLD_ID": "true",
+    "NEXT_PUBLIC_MOCK_PRIVY": "true"
   },
   "functions": {
     "src/app/api/**/*.ts": {

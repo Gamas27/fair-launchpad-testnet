@@ -1,0 +1,84 @@
+{
+  "name": "g8-platform",
+  "version": "2.0.0",
+  "description": "G8 - Next-generation token launchpad with World ID integration",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "dev:g8": "next dev -p 3001",
+    "build": "next build",
+    "build:g8": "next build --config next.config.g8.ts",
+    "start": "next start",
+    "start:g8": "next start -p 3001",
+    "lint": "next lint",
+    "lint:g8": "next lint --dir src/app/g8 --dir src/components/g8",
+    "type-check": "tsc --noEmit",
+    "type-check:g8": "tsc --noEmit --project tsconfig.g8.json",
+    "test": "jest",
+    "test:g8": "jest --testPathPattern=g8",
+    "deploy:g8": "vercel --prod --config vercel.g8.json",
+    "deploy:g8:preview": "vercel --config vercel.g8.json"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
+    "@prisma/client": "^5.7.1",
+    "@tanstack/react-query": "^5.17.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "date-fns": "^3.0.6",
+    "ethers": "^6.8.1",
+    "lucide-react": "^0.303.0",
+    "next": "15.2.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.48.2",
+    "recharts": "^2.8.0",
+    "tailwind-merge": "^2.2.0",
+    "viem": "^1.19.9",
+    "wagmi": "^2.0.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "15.2.3",
+    "jest": "^29.7.0",
+    "postcss": "^8.4.32",
+    "prisma": "^5.7.1",
+    "tailwindcss": "^3.4.0",
+    "ts-jest": "^29.1.1",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "g8",
+    "token-launchpad",
+    "world-id",
+    "web3",
+    "defi",
+    "crypto",
+    "blockchain",
+    "nextjs",
+    "react",
+    "typescript"
+  ],
+  "author": "G8 Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gamas27/g8-platform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gamas27/g8-platform/issues"
+  },
+  "homepage": "https://g8-platform.vercel.app"
+}
+

@@ -27,12 +27,12 @@ import {
   Shield,
   Wallet,
   Globe,
-  Chat,
+  MessageCircle,
   Info,
-  External,
+  ExternalLink,
   Copy,
-  Chevron,
-  Dots
+  ChevronDown,
+  MoreHorizontal
 } from 'lucide-react'
 
 export default function AtomsDemoPage() {
@@ -212,7 +212,7 @@ export default function AtomsDemoPage() {
                 <TagV2 variant="warning">Warning</TagV2>
                 <TagV2 variant="danger">Danger</TagV2>
                 <TagV2 variant="info">Info</TagV2>
-                <TagV2 variant="neon" glow>Neon</TagV2>
+                <TagV2 variant="neon">Neon</TagV2>
                 <TagV2 variant="gradient">Gradient</TagV2>
               </div>
             </div>
@@ -307,7 +307,7 @@ export default function AtomsDemoPage() {
               body="This is a more detailed tooltip with both title and body content"
               variant="neon"
             >
-              <ButtonV2 variant="gradient">Advanced Tooltip</ButtonV2>
+              <ButtonV2 variant="primary">Advanced Tooltip</ButtonV2>
             </TooltipV2>
           </div>
         </CardV2>

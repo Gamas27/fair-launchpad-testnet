@@ -1,0 +1,92 @@
+{
+  "version": 2,
+  "name": "g8-platform",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/g8/(.*)",
+      "dest": "/g8/$1"
+    },
+    {
+      "src": "/api/g8/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/g8"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "NEXT_PUBLIC_ENVIRONMENT": "production",
+    "NEXT_PUBLIC_G8_MODE": "true",
+    "NEXT_PUBLIC_APP_NAME": "G8",
+    "NEXT_PUBLIC_APP_VERSION": "2.0.0",
+    "DATABASE_URL": "@database_url",
+    "NEXTAUTH_SECRET": "@nextauth_secret",
+    "NEXT_PUBLIC_WORLD_ID_API_KEY": "@world_id_api_key",
+    "WORLD_ID_APP_ID": "@world_id_app_id",
+    "NEXT_PUBLIC_WORLD_ID_APP_ID": "@world_id_app_id",
+    "NEXT_PUBLIC_WORLD_ID_ACTION_ID": "@world_id_action_id",
+    "NEXT_PUBLIC_PRIVY_APP_ID": "@privy_app_id",
+    "NEXT_PUBLIC_PRIVY_APP_SECRET": "@privy_app_secret",
+    "NEXT_PUBLIC_TEST_MODE": "false",
+    "NEXT_PUBLIC_MOCK_WORLD_ID": "false",
+    "NEXT_PUBLIC_MOCK_PRIVY": "false"
+  },
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "X-G8-App",
+          "value": "true"
+        },
+        {
+          "key": "X-G8-Version",
+          "value": "2.0.0"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/g8",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/g8/:path*",
+      "destination": "/api/:path*"
+    }
+  ]
+}
+

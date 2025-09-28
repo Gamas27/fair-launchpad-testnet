@@ -1,5 +1,5 @@
-import MainApp from './main'
+import { redirect } from 'next/navigation'
 
 export default function Home() {
-  return <MainApp />
+  redirect('/g8')
 }
