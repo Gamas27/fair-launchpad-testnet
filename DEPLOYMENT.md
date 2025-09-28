@@ -1,237 +1,139 @@
-# Fair Launchpad - Deployment Guide
+# Fair Launchpad - World App Deployment Guide
 
-## 🌐 Production Deployment
+## 🚀 Deployment to Vercel
 
-### **Live URLs:**
-- **Main App**: https://fair-launchpad-world-app.vercel.app
-- **World App Page**: https://fair-launchpad-world-app.vercel.app/world-app
-- **Status**: ✅ Production Ready
+### Prerequisites
+- Vercel account
+- GitHub repository connected to Vercel
+- Environment variables configured
+
+### Step 1: Deploy to Vercel
+
+1. **Connect Repository**
+```bash
+   # Install Vercel CLI
+   npm i -g vercel
+   
+   # Login to Vercel
+   vercel login
+   
+   # Deploy from project directory
+   vercel --prod
+   ```
+
+2. **Environment Variables**
+   Set these in Vercel dashboard:
+   ```
+   NODE_ENV=production
+   NEXT_PUBLIC_ENVIRONMENT=production
+   NEXT_PUBLIC_API_URL=https://your-app.vercel.app/api
+   NEXT_PUBLIC_WORLD_APP_ID=your-world-app-id
+   NEXT_PUBLIC_WORLD_APP_SECRET=your-world-app-secret
+   ```
+
+### Step 2: World App Integration
+
+1. **World Developer Portal**
+   - Go to [World Developer Portal](https://developer.worldcoin.org/)
+   - Create new mini app
+   - Set deployment URL: `https://your-app.vercel.app/integrated-app`
+   - Configure authentication settings
+
+2. **World ID Configuration**
+   - Add World ID verification endpoints
+   - Configure callback URLs
+   - Set up environment variables
+
+### Step 3: Testing
+
+1. **Health Check**
+```bash
+   curl https://your-app.vercel.app/api/health
+   ```
+
+2. **World App Testing**
+   - Test in World App sandbox
+   - Verify authentication flow
+   - Test all modules
+
+### Step 4: Production Setup
+
+1. **Database Integration**
+   - Connect to production database
+   - Run migrations
+   - Configure connection strings
+
+2. **External APIs**
+   - Configure blockchain RPC endpoints
+   - Set up price feeds
+   - Configure external services
+
+## 📱 App URLs
+
+- **Main App**: `/integrated-app`
+- **World App**: `/world-app`
+- **Health Check**: `/api/health`
+
+## 🔧 Configuration
+
+### Vercel Settings
+- Framework: Next.js
+- Build Command: `npm run build`
+- Output Directory: `.next`
+- Install Command: `npm install`
+
+### Environment Variables
+```bash
+# Required
+NODE_ENV=production
+NEXT_PUBLIC_ENVIRONMENT=production
+
+# World App
+NEXT_PUBLIC_WORLD_APP_ID=your-id
+NEXT_PUBLIC_WORLD_APP_SECRET=your-secret
+
+# Database (future)
+DATABASE_URL=your-database-url
+
+# Blockchain
+NEXT_PUBLIC_RPC_URL=https://api.mainnet-beta.solana.com
+```
 
 ## 🚀 Deployment Commands
 
-### **Deploy to Production:**
 ```bash
+# Build and test locally
+npm run build
+npm run start
+
 # Deploy to Vercel
-npx vercel --prod
+vercel --prod
 
 # Check deployment status
-npx vercel ls
-
-# View deployment logs
-npx vercel logs https://fair-launchpad-world-app.vercel.app
+vercel ls
 ```
 
-### **Domain Management:**
+## 📊 Monitoring
+
+- **Vercel Analytics**: Built-in performance monitoring
+- **Health Endpoint**: `/api/health` for status checks
+- **Error Tracking**: Vercel error logs
+
+## 🔄 Updates
+
+To update the deployment:
 ```bash
-# List domains
-npx vercel domains ls
-
-# Add custom domain
-npx vercel domains add your-domain.com
-
-# Remove domain
-npx vercel domains rm your-domain.com
+git add .
+git commit -m "Update deployment"
+git push origin main
+# Vercel will auto-deploy
 ```
 
-## 🔧 Environment Configuration
+## 🎯 World App Specific
 
-### **Vercel Environment Variables:**
-```bash
-# World ID Configuration
-NEXT_PUBLIC_WORLD_ID_APP_ID=your_world_id_app_id
-NEXT_PUBLIC_WORLD_ID_ACTION_ID=your_world_id_action_id
-
-# Optional: Journey Version
-NEXT_PUBLIC_JOURNEY_VERSION=v1
-```
-
-### **Setting Environment Variables:**
-1. Go to Vercel Dashboard → **Settings** → **Environment Variables**
-2. Add each variable with appropriate values
-3. Redeploy to apply changes
-
-## 🌍 World App Integration
-
-### **World Developer Portal Setup:**
-1. **URL**: [developer.worldcoin.org](https://developer.worldcoin.org)
-2. **Mini App Configuration**:
-   ```
-   App Name: Fair Launchpad
-   App URL: https://fair-launchpad-world-app.vercel.app
-   Description: Anti-bot meme coin launchpad with World ID verification
-   Category: DeFi
-   ```
-
-### **World ID Integration:**
-1. **App ID**: Get from World ID app settings
-2. **Action ID**: Generate or use existing
-3. **Verification URL**: Your Vercel domain
-4. **Allowed Origins**: Add your domain to CORS settings
-
-## 📊 Performance Monitoring
-
-### **Vercel Analytics:**
-- **Dashboard**: https://vercel.com/launchworld/fair-launchpad-testnet
-- **Analytics**: Monitor performance and usage
-- **Functions**: Check serverless function logs
-- **Edge**: Monitor CDN performance
-
-### **Key Metrics:**
-- **Bundle Size**: 113kB for `/world-app`
-- **First Load JS**: 100kB shared
-- **Build Time**: ~4 seconds
-- **Deployment Time**: ~30 seconds
-
-## 🔄 Deployment Workflow
-
-### **Git Strategy:**
-```
-main (always deployable)
-├── milestone/1-core-journey
-├── milestone/2-kyc-pools
-├── deploy/core-journey (current)
-└── hotfix/critical-fixes
-```
-
-### **Deployment Process:**
-1. **Development**: Work on feature branches
-2. **Testing**: Test locally and in staging
-3. **Deployment**: Merge to deployment branch
-4. **Production**: Deploy to Vercel
-5. **Monitoring**: Check performance and logs
-
-## 🧪 Testing Deployment
-
-### **Local Testing:**
-```bash
-# Start development server
-npm run dev
-
-# Test URLs:
-# http://localhost:3000 (redirects to /world-app)
-# http://localhost:3000/world-app (main journey)
-```
-
-### **Production Testing:**
-1. **Direct URL**: https://fair-launchpad-world-app.vercel.app
-2. **World App**: Test in World App environment
-3. **Mobile**: Test on mobile devices
-4. **Performance**: Check loading times
-
-## 🔧 Troubleshooting
-
-### **Common Issues:**
-
-#### **Build Failures:**
-```bash
-# Check build logs
-npx vercel logs --follow
-
-# Redeploy
-npx vercel --prod
-```
-
-#### **Domain Issues:**
-```bash
-# Check domain status
-npx vercel domains ls
-
-# Verify DNS
-nslookup fair-launchpad-world-app.vercel.app
-```
-
-#### **Environment Variables:**
-```bash
-# Check environment variables
-npx vercel env ls
-
-# Add missing variables
-npx vercel env add VARIABLE_NAME
-```
-
-### **Debug Commands:**
-```bash
-# Check deployment status
-npx vercel ls
-
-# View specific deployment
-npx vercel inspect https://fair-launchpad-world-app.vercel.app
-
-# Check function logs
-npx vercel logs --follow
-```
-
-## 📱 World App Testing
-
-### **Testing Checklist:**
-- ✅ **Public Domain**: Accessible from World App
-- ✅ **HTTPS**: Secure connection
-- ✅ **Mobile Optimized**: Responsive design
-- ✅ **World ID**: Integration working
-- ✅ **Core Journey**: Flow complete
-- ✅ **Performance**: Fast loading
-
-### **World App Integration:**
-1. **Open World App** on your device
-2. **Search for "Fair Launchpad"** in mini apps
-3. **Test the journey**:
-   - World ID verification
-   - Wallet creation
-   - Token launch readiness
-4. **Check performance** and user experience
-
-## 🔄 Rollback Strategy
-
-### **Rollback Commands:**
-```bash
-# List deployments
-npx vercel ls
-
-# Rollback to previous deployment
-npx vercel rollback https://fair-launchpad-world-app.vercel.app
-
-# Promote specific deployment
-npx vercel promote https://fair-launchpad-world-app.vercel.app
-```
-
-### **Emergency Rollback:**
-1. **Identify Issue**: Check logs and metrics
-2. **Rollback**: Use Vercel CLI or dashboard
-3. **Verify**: Test the rollback deployment
-4. **Monitor**: Watch for stability
-5. **Fix**: Address the root cause
-
-## 📈 Monitoring & Analytics
-
-### **Vercel Dashboard:**
-- **Performance**: Core Web Vitals
-- **Functions**: Serverless function metrics
-- **Edge**: CDN performance
-- **Analytics**: User behavior
-
-### **Key Metrics to Monitor:**
-- **Page Load Time**: < 2 seconds
-- **Bundle Size**: < 150kB
-- **Error Rate**: < 1%
-- **Uptime**: > 99.9%
-
-## 🎯 Next Steps
-
-### **Immediate Actions:**
-1. ✅ **Deploy to Production** - Complete
-2. ✅ **Set up Public Domain** - Complete
-3. ✅ **Configure World App** - Ready
-4. 🔄 **Test Integration** - In progress
-5. 📊 **Monitor Performance** - Ongoing
-
-### **Future Improvements:**
-- **Real World ID Integration** - Replace mock authentication
-- **Privy Integration** - Real wallet creation
-- **Token Launch** - Actual token deployment
-- **Analytics** - User behavior tracking
-
----
-
-**🚀 Deployment Complete!** 
-
-Your Fair Launchpad is now live and ready for World App integration! 🎯
+The app is optimized for World App with:
+- Dark theme matching World App design
+- Core Journey flow
+- Bottom tab navigation
+- Mobile-first responsive design
+- World ID integration ready
