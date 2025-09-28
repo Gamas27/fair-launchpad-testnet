@@ -11,13 +11,26 @@ import {
   BarChart3,
   Home,
   TrendingUp,
-  Settings,
   Plus,
   ArrowRight,
   CheckCircle,
-  Loader2
+  Loader2,
+  MessageCircle,
+  Settings,
+  Coins,
+  User,
+  Eye
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+// Import all modules
+import { DiscoveryModuleWorldAppExport } from '@/modules/discovery-module/world-app'
+import { ProfileModuleWorldAppExport } from '@/modules/profile-module/world-app'
+import { NavigationModuleWorldApp } from '@/modules/navigation-module/world-app'
+import { CoinProfileModuleWorldAppExport } from '@/modules/coin-profile-module/world-app'
+import { ChatModuleWorldAppExport } from '@/modules/chat-module/world-app'
+import { CreateCoinModuleWorldAppExport } from '@/modules/create-coin-module/world-app'
+import { SettingsModuleWorldAppExport } from '@/modules/settings-module/world-app'
 
 // Mock authentication state
 function useMockAuth() {
@@ -173,8 +186,9 @@ function BottomNavigation({ activeTab, setActiveTab }: { activeTab: string, setA
   const tabs = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'discovery', label: 'Discovery', icon: Search },
-    { id: 'profile', label: 'Profile', icon: Wallet },
-    { id: 'navigation', label: 'Tokens', icon: BarChart3 }
+    { id: 'chat', label: 'Chat', icon: MessageCircle },
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'settings', label: 'Settings', icon: Settings }
   ]
 
   return (
@@ -207,10 +221,56 @@ function BottomNavigation({ activeTab, setActiveTab }: { activeTab: string, setA
 export default function IntegratedApp() {
   const [journeyComplete, setJourneyComplete] = useState(false)
   const [activeTab, setActiveTab] = useState('home')
+  const [selectedToken, setSelectedToken] = useState<string | null>(null)
+  const [showCreateCoin, setShowCreateCoin] = useState(false)
 
   // Show Core Journey first
   if (!journeyComplete) {
     return <CoreJourneyFlow onComplete={() => setJourneyComplete(true)} />
+  }
+
+  // Show Create Coin flow
+  if (showCreateCoin) {
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <div className="sticky top-0 z-10 bg-black/90 backdrop-blur-md border-b border-gray-800/50">
+          <div className="flex items-center justify-between p-3">
+            <Button 
+              variant="ghost" 
+              onClick={() => setShowCreateCoin(false)}
+              className="text-gray-400 hover:text-white"
+            >
+              ← Back
+            </Button>
+            <div className="text-lg font-bold gradient-text">Create Token</div>
+            <div></div>
+          </div>
+        </div>
+        <CreateCoinModuleWorldAppExport.CreateCoinModule />
+      </div>
+    )
+  }
+
+  // Show Coin Profile
+  if (selectedToken) {
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <div className="sticky top-0 z-10 bg-black/90 backdrop-blur-md border-b border-gray-800/50">
+          <div className="flex items-center justify-between p-3">
+            <Button 
+              variant="ghost" 
+              onClick={() => setSelectedToken(null)}
+              className="text-gray-400 hover:text-white"
+            >
+              ← Back
+            </Button>
+            <div className="text-lg font-bold gradient-text">Token Profile</div>
+            <div></div>
+          </div>
+        </div>
+        <CoinProfileModuleWorldAppExport.CoinProfileModule />
+      </div>
+    )
   }
 
   // Main App with Bottom Navigation
@@ -223,9 +283,24 @@ export default function IntegratedApp() {
             <div className="text-lg font-bold gradient-text">FairLaunch</div>
             <Badge className="bg-green-500 text-white text-xs font-bold animate-pulse">LIVE</Badge>
           </div>
-          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-            <Settings className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setShowCreateCoin(true)}
+              className="text-gray-400 hover:text-white"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setActiveTab('settings')}
+              className="text-gray-400 hover:text-white"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -242,14 +317,58 @@ export default function IntegratedApp() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <Button className="bg-gradient-to-r from-cyan-500 to-pink-500 text-white">
+                  <Button 
+                    onClick={() => setShowCreateCoin(true)}
+                    className="bg-gradient-to-r from-cyan-500 to-pink-500 text-white"
+                  >
                     <Plus className="h-4 w-4 mr-2" />
                     Create Token
                   </Button>
-                  <Button variant="outline" className="border-cyan-400 text-cyan-400 hover:bg-cyan-400/10">
+                  <Button 
+                    variant="outline" 
+                    className="border-cyan-400 text-cyan-400 hover:bg-cyan-400/10"
+                    onClick={() => setActiveTab('discovery')}
+                  >
                     <TrendingUp className="h-4 w-4 mr-2" />
-                    Trade
+                    Discover
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="card-gradient border-2 border-cyan-400/50">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-cyan-400">1,250</div>
+                  <div className="text-sm text-gray-400">REP Score</div>
+                </CardContent>
+              </Card>
+              <Card className="card-gradient border-2 border-purple-400/50">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-purple-400">15</div>
+                  <div className="text-sm text-gray-400">Tokens Created</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Activity */}
+            <Card className="card-gradient border-2 border-green-400/50">
+              <CardHeader>
+                <CardTitle className="text-white">Recent Activity</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-300">Created MEME Token</span>
+                  <Badge variant="outline" className="badge-outline">2h ago</Badge>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-300">Traded DOGE</span>
+                  <Badge variant="outline" className="badge-outline">5h ago</Badge>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-300">Joined ARC Community</span>
+                  <Badge variant="outline" className="badge-outline">1d ago</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -257,33 +376,19 @@ export default function IntegratedApp() {
         )}
 
         {activeTab === 'discovery' && (
-          <div className="space-y-4">
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-white mb-2">Discovery</h2>
-              <p className="text-gray-400">Search and discover tokens</p>
-            </div>
-            {/* Discovery content will be integrated here */}
-          </div>
+          <DiscoveryModuleWorldAppExport.DiscoveryModule />
+        )}
+
+        {activeTab === 'chat' && (
+          <ChatModuleWorldAppExport.ChatModule />
         )}
 
         {activeTab === 'profile' && (
-          <div className="space-y-4">
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-white mb-2">Profile</h2>
-              <p className="text-gray-400">Your wallet and stats</p>
-            </div>
-            {/* Profile content will be integrated here */}
-          </div>
+          <ProfileModuleWorldAppExport.ProfileModule />
         )}
 
-        {activeTab === 'navigation' && (
-          <div className="space-y-4">
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-white mb-2">Tokens</h2>
-              <p className="text-gray-400">Token cards and charts</p>
-            </div>
-            {/* Navigation/Token content will be integrated here */}
-          </div>
+        {activeTab === 'settings' && (
+          <SettingsModuleWorldAppExport.SettingsModule />
         )}
       </div>
 
