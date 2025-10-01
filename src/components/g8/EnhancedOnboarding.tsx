@@ -203,7 +203,7 @@ export const EnhancedOnboarding = ({ onComplete, className }: EnhancedOnboarding
         <WalletCreated
           onViewWallet={handleViewWallet}
           onCreateToken={handleCreateToken}
-          walletAddress={walletAddress}
+          walletAddress={walletAddress || undefined}
           className={className}
         />
       )

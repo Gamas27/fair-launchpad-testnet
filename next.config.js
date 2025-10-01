@@ -39,7 +39,7 @@ const nextConfig = {
   
   // Environment variables
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    CUSTOM_KEY: process.env.CUSTOM_KEY || 'default-value',
   },
   
   // Image optimization
@@ -48,8 +48,10 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
   
-  // External packages for server components
-  serverExternalPackages: ['@prisma/client'],
+  // Experimental features
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client'],
+  },
   
   // Webpack configuration
   webpack: (config, { isServer }) => {

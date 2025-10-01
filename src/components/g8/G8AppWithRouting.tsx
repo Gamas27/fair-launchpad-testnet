@@ -83,6 +83,7 @@ function useEnhancedAuth() {
         totalTrades: 15,
         totalVolume: 50000,
         isWorldIdVerified: true,
+        isWalletConnected: true,
         walletCreatedAt: new Date(),
         createdAt: new Date(),
         updatedAt: new Date()

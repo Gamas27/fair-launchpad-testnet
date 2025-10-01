@@ -7,6 +7,7 @@ import { deepLinkingService } from './DeepLinking'
 import { routeAnalyticsService } from './RouteAnalytics'
 import { middlewareManager } from './middleware'
 import { useG8 } from '../state'
+import { G8Route } from './types'
 
 /**
  * G8 Navigation Integration
@@ -58,7 +59,7 @@ export function useG8NavigationIntegration() {
 
   // Track route changes
   useEffect(() => {
-    routeAnalyticsService.trackNavigation(state.currentRoute, {}, state.navigationHistory[state.navigationHistory.length - 2])
+    routeAnalyticsService.trackNavigation(state.currentRoute as G8Route, {}, state.navigationHistory[state.navigationHistory.length - 2] as G8Route)
   }, [state.currentRoute, state.navigationHistory])
 
   return {

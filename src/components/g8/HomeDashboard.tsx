@@ -19,7 +19,8 @@ import {
   ArrowDownRight,
   Star,
   Clock,
-  Users
+  Users,
+  Rocket
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 

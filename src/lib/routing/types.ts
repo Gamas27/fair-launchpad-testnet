@@ -8,12 +8,30 @@ export type G8Route =
   | 'token-details'
   | 'chat'
   | 'onboarding'
+  | 'wallet-setup'
+  | 'journey-complete'
+  | 'world-id-verification'
+  | 'wallet-creation'
+  | 'tab-switch'
+  | 'token-created'
+  | 'back-from-create'
+  | 'back-from-token'
+  | 'create-token-click'
+  | 'token-click'
+  | 'app-init'
 
 export interface G8RouteParams {
   tokenId?: string
   chatRoomId?: string
   userId?: string
   tab?: string
+  step?: string
+  from?: string
+  to?: string
+  tokenName?: string
+  timestamp?: number
+  userAgent?: string
+  sessionId?: string
 }
 
 export interface G8NavigationState {

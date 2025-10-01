@@ -165,6 +165,31 @@ export class RouteAnalyticsService {
   }
   
   /**
+   * Get analytics metrics
+   */
+  getMetrics(): {
+    totalEvents: number
+    totalSessions: number
+    averageSessionDuration: number
+    bounceRate: number
+    conversionRate: number
+  } {
+    const totalEvents = this.events.length
+    const totalSessions = this.currentSession ? 1 : 0
+    const averageSessionDuration = this.currentSession ? this.currentSession.totalDuration : 0
+    const bounceRate = this.currentSession && this.currentSession.routes.length <= 1 ? 1 : 0
+    const conversionRate = this.currentSession && this.currentSession.routes.some(event => event.route === 'token-created') ? 1 : 0
+    
+    return {
+      totalEvents,
+      totalSessions,
+      averageSessionDuration,
+      bounceRate,
+      conversionRate
+    }
+  }
+
+  /**
    * Get popular routes
    */
   getPopularRoutes(limit: number = 10): Array<{ route: G8Route; count: number }> {
@@ -208,8 +233,8 @@ export class RouteAnalyticsService {
    */
   private sendToAnalytics(event: NavigationEvent) {
     // Google Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'page_view', {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'page_view', {
         page_title: event.route,
         page_location: window.location.href,
         custom_map: {

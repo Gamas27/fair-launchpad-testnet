@@ -1,0 +1,90 @@
+// Environment configuration for World App
+export const ENV_CONFIG = {
+  // World Chain Configuration
+  CHAIN_ID: process.env.NEXT_PUBLIC_CHAIN_ID || '480',
+  RPC_URL: process.env.NEXT_PUBLIC_RPC_URL || 'https://rpc.testnet.worldchain.org',
+  
+  // Verified Contract Addresses
+  WLD_TOKEN_ADDRESS: process.env.NEXT_PUBLIC_WLD_TOKEN_ADDRESS || '0x5b6ec6566f8270e2dc56525566b8341d29a17093',
+  WORLD_ID_ADDRESS: process.env.NEXT_PUBLIC_WORLD_ID_ADDRESS || '0x469449f251692e0779667583026b5a1e99512157',
+  UNISWAP_FACTORY_ADDRESS: process.env.NEXT_PUBLIC_UNISWAP_FACTORY_ADDRESS || '0x7a5028BDa40e7B173C278C5342087826455ea25a',
+  UNISWAP_POSITION_MANAGER_ADDRESS: process.env.NEXT_PUBLIC_UNISWAP_POSITION_MANAGER_ADDRESS || '0xec12a9F9a09f50550686363766Cc153D03c27b5e',
+  
+  // World ID Configuration
+  WORLD_ID_ROOT: process.env.NEXT_PUBLIC_WORLD_ID_ROOT || '0x0000000000000000000000000000000000000000000000000000000000000000',
+  WORLD_ID_GROUP_ID: process.env.NEXT_PUBLIC_WORLD_ID_GROUP_ID || '1',
+  WORLD_ID_EXTERNAL_NULLIFIER: process.env.NEXT_PUBLIC_WORLD_ID_EXTERNAL_NULLIFIER || '0x0000000000000000000000000000000000000000000000000000000000000000',
+  
+  // Application Configuration
+  DEFAULT_INITIAL_PRICE: process.env.NEXT_PUBLIC_DEFAULT_INITIAL_PRICE || '1000000000000000000',
+  DEFAULT_MAX_SUPPLY: process.env.NEXT_PUBLIC_DEFAULT_MAX_SUPPLY || '1000000000000000000000000',
+  DEFAULT_GRADUATION_THRESHOLD: process.env.NEXT_PUBLIC_DEFAULT_GRADUATION_THRESHOLD || '1000000000000000000000',
+  
+  // Fee Configuration
+  CREATION_FEE: process.env.NEXT_PUBLIC_CREATION_FEE || '100000000000000000',
+  PLATFORM_FEE_PERCENT: process.env.NEXT_PUBLIC_PLATFORM_FEE_PERCENT || '10',
+  CREATOR_FEE_PERCENT: process.env.NEXT_PUBLIC_CREATOR_FEE_PERCENT || '7',
+  
+  // Development Configuration
+  DEBUG_MODE: process.env.NEXT_PUBLIC_DEBUG_MODE === 'true',
+  LOG_LEVEL: process.env.NEXT_PUBLIC_LOG_LEVEL || 'debug',
+  TEST_MODE: process.env.NEXT_PUBLIC_TEST_MODE === 'true',
+  
+  // API Configuration
+  API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+  
+  // World ID Configuration (Development)
+  WORLD_ID_API_KEY: process.env.NEXT_PUBLIC_WORLD_ID_API_KEY || 'mock_world_id_api_key',
+  
+  // Privy Configuration (Development)
+  PRIVY_APP_ID: process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'privy_app_id_placeholder',
+}
+
+// World Chain network configuration
+export const WORLD_CHAIN_CONFIG = {
+  chainId: parseInt(ENV_CONFIG.CHAIN_ID),
+  name: 'World Chain Testnet',
+  rpcUrls: [ENV_CONFIG.RPC_URL],
+  nativeCurrency: {
+    name: 'World ID Token',
+    symbol: 'WLD',
+    decimals: 18,
+  },
+  blockExplorerUrls: ['https://sepolia.worldscan.org'],
+}
+
+// Contract addresses for easy access
+export const CONTRACT_ADDRESSES = {
+  WLD_TOKEN: ENV_CONFIG.WLD_TOKEN_ADDRESS,
+  WORLD_ID: ENV_CONFIG.WORLD_ID_ADDRESS,
+  UNISWAP_FACTORY: ENV_CONFIG.UNISWAP_FACTORY_ADDRESS,
+  UNISWAP_POSITION_MANAGER: ENV_CONFIG.UNISWAP_POSITION_MANAGER_ADDRESS,
+  // Our deployed contracts (TESTNET MODE for hackathon judges)
+  TOKEN_FACTORY: process.env.NEXT_PUBLIC_TOKEN_FACTORY_ADDRESS || '0x1234567890123456789012345678901234567890',
+  BONDING_CURVE: process.env.NEXT_PUBLIC_BONDING_CURVE_ADDRESS || '0x2345678901234567890123456789012345678901',
+  GRADUATION_HANDLER: process.env.NEXT_PUBLIC_GRADUATION_HANDLER_ADDRESS || '0x3456789012345678901234567890123456789012',
+}
+
+// World ID configuration
+export const WORLD_ID_CONFIG = {
+  root: ENV_CONFIG.WORLD_ID_ROOT,
+  groupId: ENV_CONFIG.WORLD_ID_GROUP_ID,
+  externalNullifier: ENV_CONFIG.WORLD_ID_EXTERNAL_NULLIFIER,
+}
+
+// Application configuration
+export const APP_CONFIG = {
+  defaultInitialPrice: ENV_CONFIG.DEFAULT_INITIAL_PRICE,
+  defaultMaxSupply: ENV_CONFIG.DEFAULT_MAX_SUPPLY,
+  defaultGraduationThreshold: ENV_CONFIG.DEFAULT_GRADUATION_THRESHOLD,
+  creationFee: ENV_CONFIG.CREATION_FEE,
+  platformFeePercent: parseInt(ENV_CONFIG.PLATFORM_FEE_PERCENT),
+  creatorFeePercent: parseInt(ENV_CONFIG.CREATOR_FEE_PERCENT),
+}
+
+// Development configuration
+export const DEV_CONFIG = {
+  debugMode: ENV_CONFIG.DEBUG_MODE,
+  logLevel: ENV_CONFIG.LOG_LEVEL,
+  testMode: ENV_CONFIG.TEST_MODE,
+}

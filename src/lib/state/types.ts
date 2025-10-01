@@ -10,6 +10,7 @@ export interface G8User {
   totalTrades: number
   totalVolume: number
   isWorldIdVerified: boolean
+  isWalletConnected: boolean
   walletCreatedAt: Date
   createdAt: Date
   updatedAt: Date

@@ -235,8 +235,8 @@ export const rateLimitMiddleware = (maxRequests: number = 10, windowMs: number =
  */
 export const analyticsMiddleware: RouteMiddleware = (context) => {
   // Track navigation
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('event', 'page_view', {
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    (window as any).gtag('event', 'page_view', {
       page_title: G8_ROUTE_CONFIG[context.route]?.metadata?.title,
       page_location: window.location.href
     })

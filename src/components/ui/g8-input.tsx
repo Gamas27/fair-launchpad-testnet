@@ -27,7 +27,7 @@ const g8InputVariants = cva(
 )
 
 export interface G8InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement>,
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof g8InputVariants> {
   asChild?: boolean
   icon?: React.ReactNode

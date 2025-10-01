@@ -531,10 +531,11 @@ export class StateValidationService {
       return {
         success: true,
         recoveredData: { user: null },
-        action: 'Cleared invalid user data'
+        action: 'Cleared invalid user data',
+        errors: [] as ValidationError[]
       }
     }
-    return { success: true, errors: [] }
+    return { success: true, errors: [] as ValidationError[] }
   }
   
   /**
@@ -544,7 +545,8 @@ export class StateValidationService {
     return {
       success: true,
       recoveredData: { currentRoute: 'home' },
-      action: 'Reset to home route'
+      action: 'Reset to home route',
+      errors: [] as ValidationError[]
     }
   }
   
@@ -555,7 +557,8 @@ export class StateValidationService {
     return {
       success: true,
       recoveredData: { tokens: [] },
-      action: 'Cleared invalid tokens'
+      action: 'Cleared invalid tokens',
+      errors: [] as ValidationError[]
     }
   }
   
@@ -573,7 +576,8 @@ export class StateValidationService {
           campaignUpdates: true
         }
       },
-      action: 'Reset to default notifications'
+      action: 'Reset to default notifications',
+      errors: [] as ValidationError[]
     }
   }
   
@@ -584,7 +588,8 @@ export class StateValidationService {
     return {
       success: true,
       recoveredData: { theme: 'dark' },
-      action: 'Reset to dark theme'
+      action: 'Reset to dark theme',
+      errors: [] as ValidationError[]
     }
   }
   

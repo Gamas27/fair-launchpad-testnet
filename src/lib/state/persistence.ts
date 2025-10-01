@@ -183,20 +183,20 @@ export class StatePersistenceService {
       return state
     }
     
-    const selectiveState: Partial<G8AppState> = {}
+    const selectiveState: any = {}
     
     if (this.config.include.length > 0) {
       // Include only specified fields
       this.config.include.forEach(key => {
         if (key in state) {
-          selectiveState[key] = state[key]
+          selectiveState[key] = state[key] ?? undefined
         }
       })
     } else {
       // Exclude specified fields
       Object.keys(state).forEach(key => {
         if (!this.config.exclude.includes(key as keyof G8AppState)) {
-          selectiveState[key as keyof G8AppState] = state[key as keyof G8AppState]
+          selectiveState[key as keyof G8AppState] = state[key as keyof G8AppState] ?? undefined
         }
       })
     }
@@ -313,8 +313,12 @@ export class StatePersistenceService {
     
     const transaction = this.db!.transaction(['state'], 'readonly')
     const store = transaction.objectStore('state')
-    const result = await store.get(this.config.key)
-    return result?.data || null
+    const request = store.get(this.config.key)
+    
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result || null)
+      request.onerror = () => reject(request.error)
+    })
   }
   
   /**

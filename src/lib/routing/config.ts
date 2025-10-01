@@ -104,6 +104,138 @@ export const G8_ROUTE_CONFIG: Record<G8Route, G8RouteConfig> = {
       description: 'Get started with G8',
       icon: 'shield'
     }
+  },
+  'wallet-setup': {
+    path: '/g8/wallet-setup',
+    component: 'WalletSetupScreen',
+    requiresAuth: true,
+    requiresWorldId: true,
+    requiresWallet: false,
+    metadata: {
+      title: 'Wallet Setup',
+      description: 'Set up your wallet',
+      icon: 'wallet'
+    }
+  },
+  'journey-complete': {
+    path: '/g8/journey-complete',
+    component: 'JourneyCompleteScreen',
+    requiresAuth: true,
+    requiresWorldId: true,
+    requiresWallet: true,
+    metadata: {
+      title: 'Journey Complete',
+      description: 'Welcome to G8',
+      icon: 'check-circle'
+    }
+  },
+  'world-id-verification': {
+    path: '/g8/world-id-verification',
+    component: 'WorldIdVerificationScreen',
+    requiresAuth: true,
+    requiresWorldId: false,
+    requiresWallet: false,
+    metadata: {
+      title: 'World ID Verification',
+      description: 'Verify your identity',
+      icon: 'shield'
+    }
+  },
+  'wallet-creation': {
+    path: '/g8/wallet-creation',
+    component: 'WalletCreationScreen',
+    requiresAuth: true,
+    requiresWorldId: true,
+    requiresWallet: false,
+    metadata: {
+      title: 'Wallet Creation',
+      description: 'Create your wallet',
+      icon: 'wallet'
+    }
+  },
+  'tab-switch': {
+    path: '/g8/tab-switch',
+    component: 'TabSwitchScreen',
+    requiresAuth: true,
+    requiresWorldId: true,
+    requiresWallet: true,
+    metadata: {
+      title: 'Tab Switch',
+      description: 'Switch tabs',
+      icon: 'layout'
+    }
+  },
+  'token-created': {
+    path: '/g8/token-created',
+    component: 'TokenCreatedScreen',
+    requiresAuth: true,
+    requiresWorldId: true,
+    requiresWallet: true,
+    metadata: {
+      title: 'Token Created',
+      description: 'Your token has been created',
+      icon: 'check-circle'
+    }
+  },
+  'back-from-create': {
+    path: '/g8/back-from-create',
+    component: 'BackFromCreateScreen',
+    requiresAuth: true,
+    requiresWorldId: true,
+    requiresWallet: true,
+    metadata: {
+      title: 'Back from Create',
+      description: 'Return from create flow',
+      icon: 'arrow-left'
+    }
+  },
+  'back-from-token': {
+    path: '/g8/back-from-token',
+    component: 'BackFromTokenScreen',
+    requiresAuth: true,
+    requiresWorldId: true,
+    requiresWallet: true,
+    metadata: {
+      title: 'Back from Token',
+      description: 'Return from token details',
+      icon: 'arrow-left'
+    }
+  },
+  'create-token-click': {
+    path: '/g8/create-token-click',
+    component: 'CreateTokenClickScreen',
+    requiresAuth: true,
+    requiresWorldId: true,
+    requiresWallet: true,
+    metadata: {
+      title: 'Create Token Click',
+      description: 'Create token action',
+      icon: 'plus'
+    }
+  },
+  'token-click': {
+    path: '/g8/token-click',
+    component: 'TokenClickScreen',
+    requiresAuth: true,
+    requiresWorldId: true,
+    requiresWallet: true,
+    metadata: {
+      title: 'Token Click',
+      description: 'Token action',
+      icon: 'eye'
+    }
+  },
+  'app-init': {
+    path: '/g8/app-init',
+    component: 'AppInitScreen',
+    requiresAuth: false,
+    requiresWorldId: false,
+    requiresWallet: false,
+    metadata: {
+      title: 'App Initialization',
+      description: 'Initialize the app',
+      icon: 'loader'
+    }
   }
 }
 

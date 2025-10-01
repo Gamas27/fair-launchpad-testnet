@@ -293,7 +293,7 @@ export function useDeepLinking() {
   
   // Handle URL changes
   useEffect(() => {
-    deepLinkingService.handleBrowserNavigation(pathname, searchParams)
+    deepLinkingService.handleBrowserNavigation(pathname, new URLSearchParams(Array.from(searchParams.entries())))
   }, [pathname, searchParams])
   
   const navigateToDeepLink = useCallback(async (url: string) => {

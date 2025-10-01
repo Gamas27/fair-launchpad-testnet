@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
-import { useG8Navigation } from '../state/context'
+import { useG8Navigation, useG8 } from '../state/context'
 
 interface RouteTransitionProps {
   children: React.ReactNode
@@ -14,13 +14,13 @@ interface RouteTransitionProps {
  * Route transition animations and loading states
  */
 export function RouteTransition({ children, route, className }: RouteTransitionProps) {
-  const { isLoading } = useG8Navigation()
+  const { state } = useG8()
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [previousRoute, setPreviousRoute] = useState<string | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
-    if (isLoading) {
+    if (state.isLoading) {
       setIsTransitioning(true)
       // Clear any existing timeout
       if (timeoutRef.current) {
@@ -39,7 +39,7 @@ export function RouteTransition({ children, route, className }: RouteTransitionP
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [isLoading, route])
+  }, [state.isLoading, route])
 
   // Animation variants
   const pageVariants: Variants = {
@@ -76,8 +76,8 @@ export function RouteTransition({ children, route, className }: RouteTransitionP
   }
 
   const transition = {
-    type: 'tween',
-    ease: 'easeInOut',
+    type: 'tween' as const,
+    ease: 'easeInOut' as const,
     duration: 0.3
   }
 
