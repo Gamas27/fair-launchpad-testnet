@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Shield, Users, Zap, TrendingUp, BarChart3, Lock, CheckCircle } from "lucide-react"
-import { useSafeWorldId } from "@/providers/SafeWorldIdProvider"
+// import { useSafeWorldId } from "@/providers/SafeWorldIdProvider"
 
 interface DeeprInspiredLandingProps {
   onNavigateToLaunch?: () => void
 }
 
 export default function DeeprInspiredLanding({ onNavigateToLaunch }: DeeprInspiredLandingProps) {
-  const { isVerified, verificationLevel } = useSafeWorldId()
+  // const { isVerified, verificationLevel } = useSafeWorldId()
+  const isVerified = false
+  const verificationLevel = 'device'
 
   const handleLaunchToken = async () => {
     if (!isVerified) {
