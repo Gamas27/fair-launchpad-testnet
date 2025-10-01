@@ -1,5 +1,6 @@
-import UserProfile from '@/components/UserProfile'
+import { redirect } from 'next/navigation'
 
 export default function ProfilePage() {
-  return <UserProfile />
+  // Redirect to G8 profile
+  redirect('/g8/profile')
 }
