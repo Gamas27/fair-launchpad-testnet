@@ -79,32 +79,31 @@ export default function ProfilePage() {
         <div className="bg-g8-surface border border-g8-stroke rounded-g8-lg p-6">
           <h2 className="text-g8-h2 text-g8-text-primary font-semibold mb-4">Account Information</h2>
           <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-g8-body text-g8-text-secondary">Wallet Address</span>
-                <span className="text-g8-body text-g8-text-primary font-mono">
-                  {currentUser.walletAddress.slice(0, 6)}...{currentUser.walletAddress.slice(-4)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-g8-body text-g8-text-secondary">World ID Status</span>
-                <span className={`text-g8-body font-medium ${currentUser.isWorldIdVerified ? 'text-g8-success' : 'text-g8-error'}`}>
-                  {currentUser.isWorldIdVerified ? '✅ Verified' : '❌ Not Verified'}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-g8-body text-g8-text-secondary">Reputation Level</span>
-                <span className="text-g8-body text-g8-text-primary font-medium">{currentUser.reputationLevel}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-g8-body text-g8-text-secondary">Total Trades</span>
-                <span className="text-g8-body text-g8-text-primary font-medium">{currentUser.totalTrades}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-g8-body text-g8-text-secondary">Total Volume</span>
-                <span className="text-g8-body text-g8-text-primary font-medium">${currentUser.totalVolume.toFixed(2)}</span>
-              </div>
+            <div className="flex items-center justify-between">
+              <span className="text-g8-body text-g8-text-secondary">Wallet Address</span>
+              <span className="text-g8-body text-g8-text-primary font-mono">
+                {currentUser.walletAddress.slice(0, 6)}...{currentUser.walletAddress.slice(-4)}
+              </span>
             </div>
-          )}
+            <div className="flex items-center justify-between">
+              <span className="text-g8-body text-g8-text-secondary">World ID Status</span>
+              <span className={`text-g8-body font-medium ${currentUser.isWorldIdVerified ? 'text-g8-success' : 'text-g8-error'}`}>
+                {currentUser.isWorldIdVerified ? '✅ Verified' : '❌ Not Verified'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-g8-body text-g8-text-secondary">Reputation Level</span>
+              <span className="text-g8-body text-g8-text-primary font-medium">{currentUser.reputationLevel}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-g8-body text-g8-text-secondary">Total Trades</span>
+              <span className="text-g8-body text-g8-text-primary font-medium">{currentUser.totalTrades}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-g8-body text-g8-text-secondary">Total Volume</span>
+              <span className="text-g8-body text-g8-text-primary font-medium">${currentUser.totalVolume.toFixed(2)}</span>
+            </div>
+          </div>
         </div>
 
         {/* My Tokens */}
