@@ -104,11 +104,6 @@ export default function ProfilePage() {
                 <span className="text-g8-body text-g8-text-primary font-medium">${currentUser.totalVolume.toFixed(2)}</span>
               </div>
             </div>
-          ) : (
-            <div className="text-center py-4">
-              <div className="text-4xl mb-2">👤</div>
-              <p className="text-g8-body text-g8-text-secondary">No profile data available</p>
-            </div>
           )}
         </div>
 
