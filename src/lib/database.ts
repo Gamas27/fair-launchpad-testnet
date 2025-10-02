@@ -45,18 +45,8 @@ export class DatabaseService {
       where: { walletAddress },
       include: {
         trades: true,
-        createdTokens: true,
-        reputationQuests: {
-          include: {
-            quest: true,
-          },
-        },
-        achievements: {
-          include: {
-            achievement: true,
-          },
-        },
-        antiManipulationLogs: true,
+        tokens: true,
+        reputationHistory: true,
       },
     })
   }
@@ -73,39 +63,30 @@ export class DatabaseService {
 
   // Token operations
   async createToken(data: {
-    address: string
     name: string
-    symbol: string
+    ticker: string
     description: string
-    imageUrl?: string
-    creatorAddress: string
-    initialPrice: number
-    priceIncrement: number
-    maxSupply: bigint
+    logo?: string
+    creatorId: string
   }) {
     return this.prisma.token.create({
       data: {
-        address: data.address,
         name: data.name,
-        symbol: data.symbol,
+        ticker: data.ticker,
         description: data.description,
-        imageUrl: data.imageUrl,
-        creatorAddress: data.creatorAddress,
-        initialPrice: data.initialPrice,
-        priceIncrement: data.priceIncrement,
-        maxSupply: data.maxSupply,
-        currentPrice: data.initialPrice,
+        logo: data.logo,
+        creatorId: data.creatorId,
       },
     })
   }
 
-  async getToken(address: string) {
+  async getToken(id: string) {
     return this.prisma.token.findUnique({
-      where: { address },
+      where: { id },
       include: {
         creator: true,
         trades: {
-          orderBy: { createdAt: 'desc' },
+          orderBy: { timestamp: 'desc' },
           take: 50,
         },
       },
@@ -126,9 +107,9 @@ export class DatabaseService {
     })
   }
 
-  async updateToken(address: string, data: any) {
+  async updateToken(id: string, data: any) {
     return this.prisma.token.update({
-      where: { address },
+      where: { id },
       data: {
         ...data,
         updatedAt: new Date(),
@@ -138,44 +119,34 @@ export class DatabaseService {
 
   // Trade operations
   async createTrade(data: {
-    userAddress: string
-    tokenAddress: string
+    userId: string
+    tokenId: string
     type: string
     amount: number
+    tokenAmount: number
     price: number
-    totalValue: number
-    blockNumber?: bigint
-    transactionHash?: string
-    riskScore?: number
-    isSuspicious?: boolean
-    manipulationFlags?: string
   }) {
     return this.prisma.trade.create({
       data: {
-        userAddress: data.userAddress,
-        tokenAddress: data.tokenAddress,
+        userId: data.userId,
+        tokenId: data.tokenId,
         type: data.type,
         amount: data.amount,
+        tokenAmount: data.tokenAmount,
         price: data.price,
-        totalValue: data.totalValue,
-        blockNumber: data.blockNumber,
-        transactionHash: data.transactionHash,
-        riskScore: data.riskScore || 0,
-        isSuspicious: data.isSuspicious || false,
-        manipulationFlags: data.manipulationFlags,
       },
     })
   }
 
-  async getTrades(userAddress?: string, tokenAddress?: string, limit = 50) {
+  async getTrades(userId?: string, tokenId?: string, limit = 50) {
     const where: any = {}
-    if (userAddress) where.userAddress = userAddress
-    if (tokenAddress) where.tokenAddress = tokenAddress
+    if (userId) where.userId = userId
+    if (tokenId) where.tokenId = tokenId
 
     return this.prisma.trade.findMany({
       where,
       take: limit,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { timestamp: 'desc' },
       include: {
         user: true,
         token: true,
@@ -184,181 +155,68 @@ export class DatabaseService {
   }
 
   // Reputation operations
-  async getReputationQuests() {
-    return this.prisma.reputationQuest.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: 'asc' },
+  async getReputationHistory(userId: string) {
+    return this.prisma.reputationHistory.findMany({
+      where: { userId },
+      orderBy: { timestamp: 'desc' },
     })
   }
 
-  async getUserReputationQuests(userAddress: string) {
-    return this.prisma.userReputationQuest.findMany({
-      where: { userAddress },
-      include: {
-        quest: true,
-      },
-    })
-  }
-
-  async updateUserReputationQuest(
-    userAddress: string,
-    questId: string,
-    progress: number,
-    isCompleted = false
-  ) {
-    return this.prisma.userReputationQuest.upsert({
-      where: {
-        userAddress_questId: {
-          userAddress,
-          questId,
-        },
-      },
-      update: {
-        progress,
-        isCompleted,
-        completedAt: isCompleted ? new Date() : null,
-        updatedAt: new Date(),
-      },
-      create: {
-        userAddress,
-        questId,
-        progress,
-        isCompleted,
-        completedAt: isCompleted ? new Date() : null,
-      },
-    })
-  }
-
-  // Achievement operations
-  async getAchievements() {
-    return this.prisma.achievement.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: 'asc' },
-    })
-  }
-
-  async getUserAchievements(userAddress: string) {
-    return this.prisma.userAchievement.findMany({
-      where: { userAddress },
-      include: {
-        achievement: true,
-      },
-    })
-  }
-
-  async createUserAchievement(userAddress: string, achievementId: string) {
-    return this.prisma.userAchievement.create({
-      data: {
-        userAddress,
-        achievementId,
-      },
-    })
-  }
-
-  // Anti-manipulation operations
-  async createAntiManipulationLog(data: {
-    userAddress: string
-    activityType: string
-    riskScore: number
-    flags: string
-    details?: string
+  async createReputationHistory(data: {
+    userId: string
+    change: number
+    reason: string
   }) {
-    return this.prisma.antiManipulationLog.create({
+    return this.prisma.reputationHistory.create({
       data: {
-        userAddress: data.userAddress,
-        activityType: data.activityType,
-        riskScore: data.riskScore,
-        flags: data.flags,
-        details: data.details,
+        userId: data.userId,
+        change: data.change,
+        reason: data.reason,
       },
-    })
-  }
-
-  async getAntiManipulationLogs(userAddress?: string, limit = 50) {
-    const where: any = {}
-    if (userAddress) where.userAddress = userAddress
-
-    return this.prisma.antiManipulationLog.findMany({
-      where,
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        user: true,
-      },
-    })
-  }
-
-  // Session operations
-  async createSession(data: {
-    userAddress: string
-    sessionToken: string
-    expiresAt: Date
-  }) {
-    return this.prisma.session.create({
-      data: {
-        userAddress: data.userAddress,
-        sessionToken: data.sessionToken,
-        expiresAt: data.expiresAt,
-      },
-    })
-  }
-
-  async getSession(sessionToken: string) {
-    return this.prisma.session.findUnique({
-      where: { sessionToken },
-      include: {
-        user: true,
-      },
-    })
-  }
-
-  async deleteSession(sessionToken: string) {
-    return this.prisma.session.delete({
-      where: { sessionToken },
     })
   }
 
   // Analytics operations
-  async getTokenStats(tokenAddress: string) {
+  async getTokenStats(tokenId: string) {
     const [totalTrades, totalVolume, uniqueTraders] = await Promise.all([
       this.prisma.trade.count({
-        where: { tokenAddress },
+        where: { tokenId },
       }),
       this.prisma.trade.aggregate({
-        where: { tokenAddress },
-        _sum: { totalValue: true },
+        where: { tokenId },
+        _sum: { amount: true },
       }),
       this.prisma.trade.groupBy({
-        by: ['userAddress'],
-        where: { tokenAddress },
+        by: ['userId'],
+        where: { tokenId },
       }),
     ])
 
     return {
       totalTrades,
-      totalVolume: totalVolume._sum.totalValue || 0,
+      totalVolume: totalVolume._sum.amount || 0,
       uniqueTraders: uniqueTraders.length,
     }
   }
 
-  async getUserStats(userAddress: string) {
+  async getUserStats(userId: string) {
     const [totalTrades, totalVolume, tokensTraded] = await Promise.all([
       this.prisma.trade.count({
-        where: { userAddress },
+        where: { userId },
       }),
       this.prisma.trade.aggregate({
-        where: { userAddress },
-        _sum: { totalValue: true },
+        where: { userId },
+        _sum: { amount: true },
       }),
       this.prisma.trade.groupBy({
-        by: ['tokenAddress'],
-        where: { userAddress },
+        by: ['tokenId'],
+        where: { userId },
       }),
     ])
 
     return {
       totalTrades,
-      totalVolume: totalVolume._sum.totalValue || 0,
+      totalVolume: totalVolume._sum.amount || 0,
       tokensTraded: tokensTraded.length,
     }
   }

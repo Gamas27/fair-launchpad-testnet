@@ -77,7 +77,7 @@ export class BlockchainService {
       }
 
       // Create signer
-      this.signer = new ethers.BrowserProvider(window.ethereum).getSigner()
+      this.signer = await new ethers.BrowserProvider(window.ethereum).getSigner()
       
       return accounts[0]
     } catch (error) {

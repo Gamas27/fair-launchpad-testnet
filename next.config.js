@@ -63,6 +63,13 @@ const nextConfig = {
         tls: false,
       }
     }
+    
+    // Exclude tools directory from build
+    config.module.rules.push({
+      test: /tools\/.*\.(ts|tsx|js|jsx)$/,
+      use: 'ignore-loader',
+    })
+    
     return config
   },
 }
