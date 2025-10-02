@@ -95,7 +95,7 @@ export class AuthService {
 
     return {
       walletAddress: user.walletAddress,
-      worldIdHash: user.worldIdHash,
+      worldIdHash: user.worldIdHash || undefined,
       verificationLevel: user.verificationLevel,
       reputationScore: user.reputationScore,
       reputationLevel: user.reputationLevel,
