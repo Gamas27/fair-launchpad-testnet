@@ -3,10 +3,12 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/useApi'
+import { useG8 } from '@/lib/state/context'
 
 export default function WorldIdPage() {
   const router = useRouter()
   const { verifyWorldId, loading, error } = useAuth()
+  const { setUser } = useG8()
   const [isVerified, setIsVerified] = useState(false)
 
   const handleVerify = async () => {
@@ -27,6 +29,11 @@ export default function WorldIdPage() {
     if (result) {
       console.log('🔐 Frontend: Verification successful, setting isVerified to true')
       setIsVerified(true)
+      
+      // Update G8 state with the verified user
+      setUser(result)
+      
+      console.log('🔐 Frontend: User set in G8 state:', result)
     } else {
       console.log('🔐 Frontend: Verification failed, result is null')
     }
