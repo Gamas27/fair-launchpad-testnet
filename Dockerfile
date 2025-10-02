@@ -66,3 +66,4 @@ CMD ["sh", "-c", "npx prisma db push && node server.js"]
 
 
 
+

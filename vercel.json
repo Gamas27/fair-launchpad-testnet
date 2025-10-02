@@ -3,7 +3,7 @@
   "env": {
     "NODE_ENV": "production",
     "NEXT_PUBLIC_ENVIRONMENT": "testnet",
-    "DATABASE_URL": "file:./dev.db",
+    "DATABASE_URL": "@postgres_url",
     "NEXTAUTH_SECRET": "fair-launchpad-test-secret-key-2024",
     "NEXT_PUBLIC_WORLD_ID_API_KEY": "test-world-id-api-key",
     "WORLD_ID_APP_ID": "test-world-id-app-id",

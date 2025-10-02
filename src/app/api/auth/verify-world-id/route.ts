@@ -59,61 +59,38 @@ export async function POST(request: NextRequest) {
     const totalTrades = Math.floor(Math.random() * 50)
     const totalVolume = Math.random() * 1000
     
-    let user
+    // Try to find existing user by worldIdHash
+    let user = await prisma.user.findFirst({
+      where: { worldIdHash }
+    })
     
-    try {
-      // Try to find existing user by worldIdHash
-      user = await prisma.user.findFirst({
-        where: { worldIdHash }
+    if (user) {
+      // Update existing user
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          isWorldIdVerified: true,
+          verificationLevel: verificationLevel,
+          updatedAt: new Date()
+        }
       })
-      
-      if (user) {
-        // Update existing user
-        user = await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            isWorldIdVerified: true,
-            verificationLevel: verificationLevel,
-            updatedAt: new Date()
-          }
-        })
-        console.log('✅ Existing user updated:', user.id)
-      } else {
-        // Create new user
-        user = await prisma.user.create({
-          data: {
-            worldIdHash,
-            verificationLevel: verificationLevel,
-            walletAddress,
-            isWorldIdVerified: true,
-            reputationScore,
-            reputationLevel: 'verified',
-            totalTrades,
-            totalVolume,
-            walletCreatedAt: new Date()
-          }
-        })
-        console.log('✅ New user created:', user.id)
-      }
-    } catch (dbError) {
-      console.log('⚠️ Database error, falling back to mock user:', dbError)
-      // Fallback to mock user for production
-      user = {
-        id: `user_${Date.now()}`,
-        worldIdHash,
-        verificationLevel: verificationLevel,
-        walletAddress,
-        isWorldIdVerified: true,
-        reputationScore,
-        reputationLevel: 'verified',
-        totalTrades,
-        totalVolume,
-        isWalletConnected: true,
-        walletCreatedAt: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-      console.log('✅ Mock user generated for production:', user.id)
+      console.log('✅ Existing user updated:', user.id)
+    } else {
+      // Create new user
+      user = await prisma.user.create({
+        data: {
+          worldIdHash,
+          verificationLevel: verificationLevel,
+          walletAddress,
+          isWorldIdVerified: true,
+          reputationScore,
+          reputationLevel: 'verified',
+          totalTrades,
+          totalVolume,
+          walletCreatedAt: new Date()
+        }
+      })
+      console.log('✅ New user created:', user.id)
     }
 
     return NextResponse.json({
