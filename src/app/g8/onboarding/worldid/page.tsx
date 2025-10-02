@@ -13,7 +13,8 @@ export default function WorldIdPage() {
     console.log('🔐 Frontend: Button clicked, starting verification...')
     
     // Simulate World ID verification with real API call
-    const mockWorldIdHash = `0x${Date.now().toString(16)}${Math.random().toString(16).substring(2, 10)}`
+    // Generate a proper 64-character hex hash (32 bytes)
+    const mockWorldIdHash = `0x${Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('')}`
     const mockVerificationLevel = 'device'
     const mockProof = { proof: 'mock_proof_data' }
 
