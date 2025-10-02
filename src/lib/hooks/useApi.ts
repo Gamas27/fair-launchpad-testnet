@@ -17,8 +17,8 @@ export const useAuth = () => {
       const response = await authService.verifyWorldId(worldIdHash, verificationLevel, proof)
       
       if (response.success && response.data) {
-        setUser(response.data)
-        return response.data
+        setUser(response.data.user)
+        return response.data.user
       } else {
         setError(response.error || 'Verification failed')
         return null

@@ -89,6 +89,9 @@ export function G8Provider({ children }: G8ProviderProps) {
           if (parsedState.notifications) {
             dispatch({ type: 'UPDATE_NOTIFICATIONS', payload: parsedState.notifications })
           }
+          if (parsedState.user) {
+            dispatch({ type: 'SET_USER', payload: parsedState.user })
+          }
         } catch (error) {
           console.error('Failed to load saved state:', error)
         }

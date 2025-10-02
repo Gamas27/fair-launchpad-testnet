@@ -82,7 +82,10 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between">
               <span className="text-g8-body text-g8-text-secondary">Wallet Address</span>
               <span className="text-g8-body text-g8-text-primary font-mono">
-                {currentUser.walletAddress.slice(0, 6)}...{currentUser.walletAddress.slice(-4)}
+                {currentUser.walletAddress ? 
+                  `${currentUser.walletAddress.slice(0, 6)}...${currentUser.walletAddress.slice(-4)}` : 
+                  'Not connected'
+                }
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -93,15 +96,15 @@ export default function ProfilePage() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-g8-body text-g8-text-secondary">Reputation Level</span>
-              <span className="text-g8-body text-g8-text-primary font-medium">{currentUser.reputationLevel}</span>
+              <span className="text-g8-body text-g8-text-primary font-medium">{currentUser.reputationLevel || 'New User'}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-g8-body text-g8-text-secondary">Total Trades</span>
-              <span className="text-g8-body text-g8-text-primary font-medium">{currentUser.totalTrades}</span>
+              <span className="text-g8-body text-g8-text-primary font-medium">{currentUser.totalTrades || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-g8-body text-g8-text-secondary">Total Volume</span>
-              <span className="text-g8-body text-g8-text-primary font-medium">${currentUser.totalVolume.toFixed(2)}</span>
+              <span className="text-g8-body text-g8-text-primary font-medium">${(currentUser.totalVolume || 0).toFixed(2)}</span>
             </div>
           </div>
         </div>

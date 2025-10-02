@@ -12,14 +12,17 @@ export interface ApiResponse<T> {
 export interface User {
   id: string
   walletAddress: string
-  worldIdHash?: string
-  verificationLevel: string
+  worldIdHash: string
+  verificationLevel: 'Device' | 'Phone' | 'Orb'
   reputationScore: number
   reputationLevel: string
   totalTrades: number
   totalVolume: number
   isWorldIdVerified: boolean
-  createdAt: string
+  isWalletConnected: boolean
+  walletCreatedAt: Date
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface Token {
@@ -51,7 +54,7 @@ export interface ChatRoom {
 
 // Authentication Services
 export const authService = {
-  async verifyWorldId(worldIdHash: string, verificationLevel: string, proof?: any): Promise<ApiResponse<User>> {
+  async verifyWorldId(worldIdHash: string, verificationLevel: string, proof?: any): Promise<ApiResponse<{user: User}>> {
     try {
       const url = `${API_BASE_URL}/api/auth/verify-world-id`
       console.log('🔐 Frontend: Starting World ID verification...')
