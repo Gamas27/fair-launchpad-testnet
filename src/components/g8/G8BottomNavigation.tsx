@@ -9,7 +9,8 @@ import {
   User,
   TrendingUp,
   BarChart3,
-  Award
+  Award,
+  Zap
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -61,6 +62,12 @@ export default function G8BottomNavigation({ className }: G8BottomNavigationProp
       path: '/g8/reputation'
     },
     {
+      id: 'alchemy',
+      label: 'Alchemy',
+      icon: Zap,
+      path: '/g8/alchemy-demo'
+    },
+    {
       id: 'profile',
       label: 'Profile',
       icon: User,
@@ -74,6 +81,7 @@ export default function G8BottomNavigation({ className }: G8BottomNavigationProp
     if (pathname.startsWith('/g8/discovery')) return 'discovery'
     if (pathname.startsWith('/g8/trading')) return 'trading'
     if (pathname.startsWith('/g8/reputation')) return 'reputation'
+    if (pathname.startsWith('/g8/alchemy-demo')) return 'alchemy'
     if (pathname.startsWith('/g8/profile')) return 'profile'
     return 'home'
   }
@@ -161,7 +169,9 @@ export function useG8Navigation() {
     if (pathname.startsWith('/g8/dashboard') || pathname === '/g8/home') return 'home'
     if (pathname.startsWith('/g8/create')) return 'create'
     if (pathname.startsWith('/g8/discovery')) return 'discovery'
+    if (pathname.startsWith('/g8/trading')) return 'trading'
     if (pathname.startsWith('/g8/reputation')) return 'reputation'
+    if (pathname.startsWith('/g8/alchemy-demo')) return 'alchemy'
     if (pathname.startsWith('/g8/profile')) return 'profile'
     return 'home'
   }
