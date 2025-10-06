@@ -1,101 +1,207 @@
-import { alchemy } from './alchemyClient'
+import { withRateLimit } from './rateLimiter'
 
-// Token analytics interface
+// Production-ready interfaces
 export interface TokenAnalytics {
-  metadata: any
-  balances: any
-  transfers: any
+  metadata: {
+    name: string
+    symbol: string
+    decimals: number
+    price?: number
+  }
+  balances: any[]
+  transfers: any[]
   lastUpdated: Date
+  success: boolean
+  error?: string
 }
 
-// Community metrics interface
 export interface CommunityMetrics {
   holderCount: number
   transferCount: number
   tradingVolume: number
   communityActivity: number
+  success: boolean
+  error?: string
 }
 
-// Get real-time token analytics
+// Production-ready retry mechanism with exponential backoff
+const retryWithBackoff = async <T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  baseDelay: number = 1000
+): Promise<T> => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn()
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw error
+      }
+      const delay = baseDelay * Math.pow(2, attempt - 1)
+      console.warn(`Alchemy API attempt ${attempt} failed, retrying in ${delay}ms...`)
+      await new Promise(resolve => setTimeout(resolve, delay))
+    }
+  }
+  throw new Error('Max retries exceeded')
+}
+
+// Production-ready token analytics with proper error handling
 export const getTokenAnalytics = async (tokenAddress: string): Promise<TokenAnalytics> => {
   try {
-    // Check if Alchemy is properly configured
-    if (!process.env.ALCHEMY_API_KEY) {
-      console.warn('Alchemy API key not configured. Returning demo data.')
-      return {
-        metadata: {
-          name: 'Demo Token',
-          symbol: 'DEMO',
-          decimals: 18,
-          price: 0.001
-        },
-        balances: [],
-        transfers: [],
-        lastUpdated: new Date()
-      }
+    // Validate token address format
+    if (!tokenAddress || !tokenAddress.startsWith('0x') || tokenAddress.length !== 42) {
+      throw new Error('Invalid token address format')
     }
 
-    const tokenData = await alchemy.core.getTokenMetadata(tokenAddress)
-    const tokenBalances = await alchemy.core.getTokenBalances(tokenAddress)
-    const tokenTransfers = await alchemy.core.getTokenTransfers(tokenAddress)
+    console.log(`🔍 Fetching token analytics for: ${tokenAddress}`)
+
+    // Use raw HTTP requests for better compatibility
+    const apiKey = process.env.ALCHEMY_API_KEY || ''
+    const baseUrl = 'https://eth-mainnet.g.alchemy.com/v2'
     
-    return {
-      metadata: tokenData,
-      balances: tokenBalances,
-      transfers: tokenTransfers,
-      lastUpdated: new Date()
-    }
-  } catch (error) {
-    console.error('Error fetching token analytics:', error)
+    // Use retry mechanism with rate limiting for production reliability
+    const [tokenData, tokenTransfers] = await Promise.all([
+      retryWithBackoff(() => withRateLimit(async () => {
+        const response = await fetch(`${baseUrl}/${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'alchemy_getTokenMetadata',
+            params: [tokenAddress],
+            id: 1
+          })
+        })
+        const data = await response.json()
+        if (data.error) throw new Error(data.error.message)
+        return data.result
+      }, 'getTokenMetadata')),
+      retryWithBackoff(() => withRateLimit(async () => {
+        const response = await fetch(`${baseUrl}/${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'alchemy_getAssetTransfers',
+            params: [{
+              fromBlock: '0x0',
+              toBlock: 'latest',
+              contractAddresses: [tokenAddress],
+              category: ['erc20']
+            }],
+            id: 2
+          })
+        })
+        const data = await response.json()
+        if (data.error) throw new Error(data.error.message)
+        return data.result
+      }, 'getAssetTransfers'))
+    ])
     
-    // Return demo data on error
+    console.log(`✅ Successfully fetched token analytics for: ${tokenAddress}`)
+    
     return {
       metadata: {
-        name: 'Demo Token',
-        symbol: 'DEMO',
+        name: tokenData.name || 'Unknown Token',
+        symbol: tokenData.symbol || 'UNKNOWN',
+        decimals: tokenData.decimals || 18,
+        price: tokenData.price || 0
+      },
+      balances: [],
+      transfers: tokenTransfers.transfers || [],
+      lastUpdated: new Date(),
+      success: true
+    }
+  } catch (error) {
+    console.error('❌ Error fetching token analytics:', error)
+    
+    return {
+      metadata: {
+        name: 'Error Token',
+        symbol: 'ERROR',
         decimals: 18,
-        price: 0.001
+        price: 0
       },
       balances: [],
       transfers: [],
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
     }
   }
 }
 
-// Get community engagement metrics
+// Production-ready community metrics with proper error handling
 export const getCommunityMetrics = async (tokenAddress: string): Promise<CommunityMetrics> => {
   try {
-    // Check if Alchemy is properly configured
-    if (!process.env.ALCHEMY_API_KEY) {
-      console.warn('Alchemy API key not configured. Returning demo data.')
-      return {
-        holderCount: 42,
-        transferCount: 156,
-        tradingVolume: 1234.56,
-        communityActivity: 75
-      }
+    // Validate token address format
+    if (!tokenAddress || !tokenAddress.startsWith('0x') || tokenAddress.length !== 42) {
+      throw new Error('Invalid token address format')
     }
 
-    const holders = await alchemy.core.getTokenHolders(tokenAddress)
-    const transfers = await alchemy.core.getTokenTransfers(tokenAddress)
-    const volume = await alchemy.core.getTokenVolume(tokenAddress)
+    console.log(`🔍 Fetching community metrics for: ${tokenAddress}`)
+
+    // Use raw HTTP requests for better compatibility
+    const apiKey = process.env.ALCHEMY_API_KEY || ''
+    const baseUrl = 'https://eth-mainnet.g.alchemy.com/v2'
+    
+    // Fetch transfers with retry mechanism and rate limiting
+    const transfers = await retryWithBackoff(() => withRateLimit(async () => {
+      const response = await fetch(`${baseUrl}/${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'alchemy_getAssetTransfers',
+          params: [{
+            fromBlock: '0x0',
+            toBlock: 'latest',
+            contractAddresses: [tokenAddress],
+            category: ['erc20']
+          }],
+          id: 3
+        })
+      })
+      const data = await response.json()
+      if (data.error) throw new Error(data.error.message)
+      return data.result
+    }, 'getAssetTransfers'))
+    
+    // Calculate metrics from transfer data
+    const uniqueHolders = new Set<string>()
+    let totalVolume = 0
+    
+    transfers.transfers?.forEach((transfer: any) => {
+      if (transfer.from) uniqueHolders.add(transfer.from)
+      if (transfer.to) uniqueHolders.add(transfer.to)
+      if (transfer.value) {
+        totalVolume += parseFloat(transfer.value) || 0
+      }
+    })
+    
+    const holderCount = uniqueHolders.size
+    const transferCount = transfers.transfers?.length || 0
+    const communityActivity = calculateActivityScore(transfers.transfers || [])
+    
+    console.log(`✅ Successfully fetched community metrics for: ${tokenAddress}`)
     
     return {
-      holderCount: holders.length,
-      transferCount: transfers.length,
-      tradingVolume: volume,
-      communityActivity: calculateActivityScore(transfers)
+      holderCount,
+      transferCount,
+      tradingVolume: totalVolume,
+      communityActivity,
+      success: true
     }
   } catch (error) {
-    console.error('Error fetching community metrics:', error)
+    console.error('❌ Error fetching community metrics:', error)
     
-    // Return demo data on error
     return {
-      holderCount: 42,
-      transferCount: 156,
-      tradingVolume: 1234.56,
-      communityActivity: 75
+      holderCount: 0,
+      transferCount: 0,
+      tradingVolume: 0,
+      communityActivity: 0,
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
     }
   }
 }
@@ -104,20 +210,25 @@ export const getCommunityMetrics = async (tokenAddress: string): Promise<Communi
 const calculateActivityScore = (transfers: any[]): number => {
   if (!transfers || transfers.length === 0) return 0
   
-  // Simple activity score based on transfer frequency
+  // Calculate activity based on recent transfers (last 24 hours)
   const recentTransfers = transfers.filter(transfer => {
     const transferTime = new Date(transfer.blockTimestamp)
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
     return transferTime > oneDayAgo
   })
   
-  return Math.min(recentTransfers.length * 10, 100) // Cap at 100
+  // Activity score: recent transfers * 10, capped at 100
+  return Math.min(recentTransfers.length * 10, 100)
 }
 
-// Get current token price
+// Production-ready current price fetcher
 export const getCurrentPrice = async (tokenAddress: string): Promise<number> => {
   try {
-    const tokenData = await alchemy.core.getTokenMetadata(tokenAddress)
+    if (!tokenAddress || !tokenAddress.startsWith('0x') || tokenAddress.length !== 42) {
+      throw new Error('Invalid token address format')
+    }
+
+    const tokenData = await retryWithBackoff(() => withRateLimit(() => alchemy.core.getTokenMetadata(tokenAddress), 'getTokenMetadata'))
     return tokenData?.price || 0
   } catch (error) {
     console.error('Error fetching current price:', error)
@@ -125,22 +236,52 @@ export const getCurrentPrice = async (tokenAddress: string): Promise<number> => 
   }
 }
 
-// Get trading volume
+// Production-ready trading volume fetcher
 export const getTradingVolume = async (tokenAddress: string): Promise<number> => {
   try {
-    const volume = await alchemy.core.getTokenVolume(tokenAddress)
-    return volume || 0
+    if (!tokenAddress || !tokenAddress.startsWith('0x') || tokenAddress.length !== 42) {
+      throw new Error('Invalid token address format')
+    }
+
+    const transfers = await retryWithBackoff(() => withRateLimit(() => alchemy.core.getAssetTransfers({
+      fromBlock: '0x0',
+      toBlock: 'latest',
+      contractAddresses: [tokenAddress],
+      category: ['erc20']
+    }), 'getAssetTransfers'))
+    
+    const volume = transfers.transfers?.reduce((total: number, transfer: any) => {
+      return total + (parseFloat(transfer.value) || 0)
+    }, 0) || 0
+    
+    return volume
   } catch (error) {
     console.error('Error fetching trading volume:', error)
     return 0
   }
 }
 
-// Get holder count
+// Production-ready holder count fetcher
 export const getHolderCount = async (tokenAddress: string): Promise<number> => {
   try {
-    const holders = await alchemy.core.getTokenHolders(tokenAddress)
-    return holders.length
+    if (!tokenAddress || !tokenAddress.startsWith('0x') || tokenAddress.length !== 42) {
+      throw new Error('Invalid token address format')
+    }
+
+    const transfers = await retryWithBackoff(() => withRateLimit(() => alchemy.core.getAssetTransfers({
+      fromBlock: '0x0',
+      toBlock: 'latest',
+      contractAddresses: [tokenAddress],
+      category: ['erc20']
+    }), 'getAssetTransfers'))
+    
+    const uniqueHolders = new Set<string>()
+    transfers.transfers?.forEach((transfer: any) => {
+      if (transfer.from) uniqueHolders.add(transfer.from)
+      if (transfer.to) uniqueHolders.add(transfer.to)
+    })
+    
+    return uniqueHolders.size
   } catch (error) {
     console.error('Error fetching holder count:', error)
     return 0
