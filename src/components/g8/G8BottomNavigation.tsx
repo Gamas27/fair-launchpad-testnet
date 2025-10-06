@@ -49,6 +49,12 @@ export default function G8BottomNavigation({ className }: G8BottomNavigationProp
       path: '/g8/discovery'
     },
     {
+      id: 'trading',
+      label: 'Trading',
+      icon: TrendingUp,
+      path: '/g8/trading'
+    },
+    {
       id: 'reputation',
       label: 'Reputation',
       icon: Award,
@@ -66,6 +72,7 @@ export default function G8BottomNavigation({ className }: G8BottomNavigationProp
     if (pathname.startsWith('/g8/dashboard') || pathname === '/g8/home') return 'home'
     if (pathname.startsWith('/g8/create')) return 'create'
     if (pathname.startsWith('/g8/discovery')) return 'discovery'
+    if (pathname.startsWith('/g8/trading')) return 'trading'
     if (pathname.startsWith('/g8/reputation')) return 'reputation'
     if (pathname.startsWith('/g8/profile')) return 'profile'
     return 'home'
