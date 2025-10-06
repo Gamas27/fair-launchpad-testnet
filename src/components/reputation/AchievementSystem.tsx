@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { G8Card, G8CardContent, G8CardHeader, G8CardTitle } from "@/components/ui/g8-card"
+import { G8Button } from "@/components/ui/g8-button"
 import { G8Badge } from "@/components/ui/g8-badge"
 import { Trophy, Star, Shield, Target, Users, Zap, Crown, Award } from "lucide-react"
 
@@ -193,9 +194,9 @@ export function AchievementSystem({ achievements, className }: AchievementSystem
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {filteredAchievements.map((achievement) => {
           const categoryConfig = achievementCategoryConfig[achievement.category]
-          const rarityConfig = rarityConfig[achievement.rarity]
+          const rarityConfigData = rarityConfig[achievement.rarity]
           const CategoryIcon = categoryConfig.icon
-          const RarityIcon = rarityConfig.icon
+          const RarityIcon = rarityConfigData.icon
 
           return (
             <G8Card 

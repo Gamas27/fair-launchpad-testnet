@@ -44,8 +44,8 @@ export class StatePersistenceService {
       key: 'g8-app-state',
       version: '1.0.0',
       selective: true,
-      exclude: ['user', 'tokens', 'chatRooms', 'selectedToken', 'selectedChatRoom'],
-      include: ['theme', 'animations', 'notifications', 'activeTab', 'showOnboarding'],
+      exclude: ['tokens', 'chatRooms', 'selectedToken', 'selectedChatRoom'],
+      include: ['user', 'isAuthenticated', 'isWorldIdVerified', 'isWalletConnected', 'theme', 'animations', 'notifications', 'activeTab', 'showOnboarding'],
       encryption: false,
       compression: false
     }

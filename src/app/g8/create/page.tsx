@@ -4,8 +4,33 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ArrowRight, Upload, Image, DollarSign, CheckCircle } from 'lucide-react'
 import G8AppLayout from '@/components/g8/G8AppLayout'
+import { useG8User } from '@/lib/state/context'
 
 export default function CreatePage() {
+  const { user: currentUser, isAuthenticated } = useG8User()
+
+  // Since World ID is mandatory, redirect to onboarding if not authenticated
+  if (!isAuthenticated || !currentUser) {
+    return (
+      <G8AppLayout>
+        <div className="p-6 text-center">
+          <div className="w-20 h-20 bg-g8-surface2 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-g8-text-secondary text-2xl">🔒</span>
+          </div>
+          <h1 className="text-g8-h1 text-g8-text-primary font-bold mb-2">World ID Required</h1>
+          <p className="text-g8-body text-g8-text-secondary mb-6">
+            Please complete World ID verification to create tokens.
+          </p>
+          <button 
+            onClick={() => window.location.href = '/g8/onboarding'}
+            className="bg-gradient-g8 text-g8-bg px-6 py-3 rounded-g8-lg font-medium hover:opacity-90 transition-opacity"
+          >
+            Complete World ID Verification
+          </button>
+        </div>
+      </G8AppLayout>
+    )
+  }
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({

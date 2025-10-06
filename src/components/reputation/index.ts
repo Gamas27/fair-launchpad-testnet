@@ -10,7 +10,7 @@ export type { ReputationData } from './ReputationCard'
 export type { ReputationQuest } from './QuestInterface'
 export type { Achievement } from './AchievementSystem'
 export type { XPProgressData } from './XPProgressBar'
-export type { ReputationBenefits } from './ReputationBenefits'
+export type { ReputationBenefits as ReputationBenefitsType } from './ReputationBenefits'
 
 // Store
 export { useReputationStore } from '@/lib/reputation/reputationStore'
