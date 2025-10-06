@@ -89,9 +89,17 @@ npx vercel --prod
 - 🟡 Contract verification
 - 🟡 End-to-end testing
 
+### **Critical Missing Features**
+- ❌ **Reputation System** - XP, quests, achievements (documented but not implemented)
+- ❌ **Anti-Bot Detection** - Real-time risk scoring (documented but not implemented)
+- ❌ **Trading Benefits** - Reputation-based limits (documented but not implemented)
+- ❌ **Real-time Monitoring** - Live analytics dashboard (documented but not implemented)
+
 ### **Next Steps**
 - Get testnet WLD tokens from faucets
 - Deploy contracts to World Chain Sepolia
+- **Implement missing reputation system** (high priority)
+- **Implement anti-bot detection** (high priority)
 - Test complete user flow
 - Verify contracts on explorer
 
