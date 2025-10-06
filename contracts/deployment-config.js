@@ -1,0 +1,25 @@
+// Deployment Configuration for Improved Fair Launchpad Contracts
+// Copy these values to your .env file
+
+module.exports = {
+  // World Chain Testnet Configuration
+  TESTNET_RPC_URL: "https://rpc.testnet.worldchain.org",
+  TESTNET_CHAIN_ID: 480,
+  
+  // Contract Addresses (VERIFIED)
+  WLD_TOKEN_ADDRESS: "0x5b6ec6566f8270e2dc56525566b8341d29a17093",
+  WORLD_ID_ADDRESS: "0x469449f251692e0779667583026b5a1e99512157",
+  UNISWAP_FACTORY_ADDRESS: "0x7a5028BDa40e7B173C278C5342087826455ea25a",
+  POSITION_MANAGER_ADDRESS: "0xec12a9F9a09f50550686363766Cc153D03c27b5e",
+  
+  // World ID Configuration (Update these with real values from World ID app)
+  WORLD_ID_ROOT: "0x0000000000000000000000000000000000000000000000000000000000000000",
+  WORLD_ID_GROUP_ID: "1",
+  WORLD_ID_EXTERNAL_NULLIFIER: "0x0000000000000000000000000000000000000000000000000000000000000000",
+  
+  // Gas Configuration
+  GAS_LIMIT: 5000000,
+  GAS_PRICE: 20000000000
+};
+
+

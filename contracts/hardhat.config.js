@@ -3,7 +3,7 @@ require("@nomicfoundation/hardhat-toolbox");
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
-    version: "0.8.19",
+    version: "0.8.28",
     settings: {
       optimizer: {
         enabled: true,
@@ -16,8 +16,8 @@ module.exports = {
       chainId: 1337
     },
     testnet: {
-      url: process.env.TESTNET_RPC_URL || "https://rpc.testnet.worldchain.org",
-      chainId: parseInt(process.env.TESTNET_CHAIN_ID || "480"),
+      url: process.env.TESTNET_RPC_URL || "https://worldchain-sepolia.g.alchemy.com/public",
+      chainId: parseInt(process.env.TESTNET_CHAIN_ID || "4801"),
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : []
     },
     mainnet: {
