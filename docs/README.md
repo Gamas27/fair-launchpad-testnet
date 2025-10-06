@@ -39,6 +39,7 @@
 - [Pitch Deck](./business/pitch-deck.md)
 - [Market Analysis](./business/market.md)
 - [Competitive Positioning](./business/positioning.md)
+- [**G8 Revised Strategy**](./strategy/G8_REVISED_STRATEGY.md) - **Community-first, World-native approach**
 
 ---
 
