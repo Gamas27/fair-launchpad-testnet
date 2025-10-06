@@ -1,3 +1,5 @@
+import { alchemy } from './alchemyClient'
+
 // Gas-less transaction configuration
 export const gaslessConfig = {
   sponsorAddress: process.env.ALCHEMY_SPONSOR_ADDRESS || '',

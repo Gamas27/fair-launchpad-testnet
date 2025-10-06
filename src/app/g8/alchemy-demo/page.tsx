@@ -7,12 +7,12 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { G8Button } from '@/components/ui/g8-button'
-import { useG8Context } from '@/lib/state/context'
+import { useG8User } from '@/lib/state/context'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function AlchemyDemoPage() {
-  const { isAuthenticated, isWorldIdVerified } = useG8Context()
+  const { isAuthenticated, isWorldIdVerified } = useG8User()
   const router = useRouter()
   const [tokenAddress, setTokenAddress] = useState('')
   const [isDemoMode, setIsDemoMode] = useState(true)

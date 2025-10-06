@@ -14,13 +14,5 @@ export const alchemy = new Alchemy({
   network: alchemyConfig.network
 })
 
-// Alchemy client configuration
-export const alchemyConfig = {
-  apiKey: process.env.ALCHEMY_API_KEY || '',
-  network: 'worldchain-sepolia' as const,
-  webhooks: true,
-  gasless: true
-}
-
 // Export Alchemy instance
 export default alchemy
