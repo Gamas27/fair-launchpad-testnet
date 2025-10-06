@@ -3,13 +3,13 @@ pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./interfaces/IWorldID.sol";
 import "./interfaces/IUniswapV3Factory.sol";
 import "./interfaces/INonfungiblePositionManager.sol";
 import "./GraduationHandlerOptimized.sol";
 
-contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
+contract BondingCurveWithGraduation is ERC20, Ownable, ReentrancyGuard {
     uint256 public constant GRADUATION_THRESHOLD = 1000 ether;
     
     IWorldID public immutable worldId;
@@ -79,41 +79,24 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
         uint256 nullifierHash,
         uint256[8] calldata proof
     ) external nonReentrant {
-        _validateBuy(wldAmount, nullifierHash);
-        _transferWLD(wldAmount);
-        _verifyAndMarkWorldId(nullifierHash, proof);
-        _processTokenMint(wldAmount);
-    }
-
-    function _validateBuy(uint256 wldAmount, uint256 nullifierHash) internal view {
         require(!isGraduated, "Already graduated");
         require(wldAmount > 0, "Amount must be greater than 0");
         require(!usedNullifiers[nullifierHash], "WorldID: nullifier already used");
         require(!hasPurchased[msg.sender], "WorldID: address already purchased");
-    }
-
-    function _transferWLD(uint256 wldAmount) internal {
+        
         require(ERC20(wldToken).transferFrom(msg.sender, address(this), wldAmount), "WLD transfer failed");
-    }
 
-    function _verifyAndMarkWorldId(uint256 nullifierHash, uint256[8] calldata proof) internal {
         _verifyWorldIdProof(nullifierHash, proof);
+        
         usedNullifiers[nullifierHash] = true;
         hasPurchased[msg.sender] = true;
-    }
-
-    function _processTokenMint(uint256 wldAmount) internal {
+        
         uint256 tokensToMint = wldAmount / currentPrice;
         require(totalSupply() + tokensToMint <= maxSupply, "Max supply exceeded");
 
         _mint(msg.sender, tokensToMint);
         totalRaisedWLD += wldAmount;
-        
-        // Improved price calculation: exponential curve that's more reasonable
-        // Price increases by 0.1% for each token minted, with a minimum increase
-        uint256 priceIncrease = (currentPrice * tokensToMint) / 1000;
-        if (priceIncrease < 1) priceIncrease = 1; // Minimum 1 wei increase
-        currentPrice = currentPrice + priceIncrease;
+        currentPrice = currentPrice + (tokensToMint / 1000);
 
         emit TokensPurchased(msg.sender, wldAmount, tokensToMint, currentPrice);
 
@@ -124,7 +107,7 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
 
     function _verifyWorldIdProof(uint256 nullifierHash, uint256[8] calldata proof) internal {
         try worldId.verifyProof(
-            uint256(keccak256(abi.encodePacked(msg.sender, address(this)))),
+            uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp))),
             worldIdRoot,
             nullifierHash,
             worldIdExternalNullifier,
@@ -140,17 +123,11 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
         require(!isGraduated, "Already graduated");
         isGraduated = true;
 
-        _transferToGraduationHandler();
-        _executeGraduation();
-    }
-
-    function _transferToGraduationHandler() internal {
         ERC20(wldToken).transfer(address(graduationHandler), totalRaisedWLD);
         ERC20(address(this)).transfer(address(graduationHandler), totalSupply());
-    }
 
-    function _executeGraduation() internal {
         uniswapPool = graduationHandler.handleGraduation(currentPrice, totalSupply());
+
         emit Graduated(uniswapPool, totalRaisedWLD, currentPrice);
     }
 

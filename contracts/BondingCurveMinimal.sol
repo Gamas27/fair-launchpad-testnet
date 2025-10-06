@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -36,7 +36,7 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
         uint256 _maxSupply,
         uint256 _worldIdRoot,
         uint256 _worldIdExternalNullifier
-    ) ERC20(name, symbol) Ownable(msg.sender) {
+    ) ERC20(name, symbol) Ownable() {
         wldToken = _wldToken;
         worldId = IWorldID(_worldId);
         currentPrice = _initialPrice;
@@ -67,7 +67,12 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
 
         _mint(msg.sender, tokensToMint);
         totalRaisedWLD += wldAmount;
-        currentPrice = currentPrice + (tokensToMint / 1000);
+        
+        // Improved price calculation: exponential curve that's more reasonable
+        // Price increases by 0.1% for each token minted, with a minimum increase
+        uint256 priceIncrease = (currentPrice * tokensToMint) / 1000;
+        if (priceIncrease < 1) priceIncrease = 1; // Minimum 1 wei increase
+        currentPrice = currentPrice + priceIncrease;
 
         emit TokensPurchased(msg.sender, wldAmount, tokensToMint, currentPrice);
 
@@ -78,7 +83,7 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
 
     function _verifyWorldIdProof(uint256 nullifierHash, uint256[8] calldata proof) internal {
         try worldId.verifyProof(
-            uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp))),
+            uint256(keccak256(abi.encodePacked(msg.sender, address(this)))),
             worldIdRoot,
             nullifierHash,
             worldIdExternalNullifier,
@@ -93,7 +98,15 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
     function _graduate() internal {
         require(!isGraduated, "Already graduated");
         isGraduated = true;
-        emit Graduated(totalRaisedWLD, currentPrice);
+        
+        // Enhanced graduation logic
+        // Transfer all WLD to a designated address for liquidity creation
+        // This could be extended to create Uniswap pools in the future
+        if (totalRaisedWLD > 0) {
+            // For now, just emit the graduation event
+            // In production, this would trigger liquidity creation
+            emit Graduated(totalRaisedWLD, currentPrice);
+        }
     }
 
     function getBondingCurveState() external view returns (uint256, uint256, uint256, bool) {
@@ -107,5 +120,13 @@ contract BondingCurveMinimal is ERC20, Ownable, ReentrancyGuard {
     function getGraduationProgress() external view returns (uint256) {
         if (totalRaisedWLD >= GRADUATION_THRESHOLD) return 100;
         return (totalRaisedWLD * 100) / GRADUATION_THRESHOLD;
+    }
+
+    function getCurrentPriceInWLD() external view returns (uint256) {
+        return currentPrice;
+    }
+
+    function getTokensForWLD(uint256 wldAmount) external view returns (uint256) {
+        return wldAmount / currentPrice;
     }
 }

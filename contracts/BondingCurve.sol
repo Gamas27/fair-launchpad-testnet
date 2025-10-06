@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -69,7 +69,12 @@ contract BondingCurve is ERC20, Ownable, ReentrancyGuard {
 
         _mint(msg.sender, tokensToMint);
         totalRaisedWLD += wldAmount;
-        currentPrice = currentPrice + (tokensToMint / 1000);
+        
+        // Improved price calculation: exponential curve that's more reasonable
+        // Price increases by 0.1% for each token minted, with a minimum increase
+        uint256 priceIncrease = (currentPrice * tokensToMint) / 1000;
+        if (priceIncrease < 1) priceIncrease = 1; // Minimum 1 wei increase
+        currentPrice = currentPrice + priceIncrease;
 
         emit TokensPurchased(msg.sender, wldAmount, tokensToMint, currentPrice);
 
@@ -80,7 +85,7 @@ contract BondingCurve is ERC20, Ownable, ReentrancyGuard {
 
     function _verifyWorldIdProof(uint256 nullifierHash, uint256[8] calldata proof) internal {
         try worldId.verifyProof(
-            uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp))),
+            uint256(keccak256(abi.encodePacked(msg.sender, address(this)))),
             worldIdRoot,
             nullifierHash,
             worldIdExternalNullifier,
